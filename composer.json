@@ -5,10 +5,14 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
+        "laravel/tinker": "^2.9",
         "php": "^8.2",
         "laravel/framework": "^11.9",
-        "laravel/tinker": "^2.9"
+        "filament/filament": "^3.0",
+        "illuminate/console": "^10.17.0",
+        "nunomaduro/termwind": "^2.0"
     },
+
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.1",
@@ -34,7 +38,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -65,7 +70,5 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    }
 }
