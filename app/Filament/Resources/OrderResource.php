@@ -38,6 +38,7 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+            // Form untuk order
             ->schema([
                 Group::make()->schema([
                     Section::make('Order Information')->schema([
@@ -147,23 +148,23 @@ class OrderResource extends Resource
 
                         ])->columns(12),
 
-                        Placeholder::make('grand_total_placeholder')
-                            ->label('Grand Total')
-                            ->content(function (Get $get, Set $set) {
-                                $total = 0;
-                                if(!$repeaters = $get('items')) {
-                                    return $total;
-                                }
+                    Placeholder::make('grand_total_placeholder')
+                        ->label('Grand Total')
+                        ->content(function (Get $get, Set $set) {
+                            $total = 0;
+                            if (!$repeaters = $get('items')) {
+                                return $total;
+                            }
 
-                                foreach($repeaters as $key => $repeater) {
-                                    $total += $get("items.{$key}.total_amount"); 
-                                }
-                                $set('grand_total', $total);
-                                return Number::currency($total, 'IDR');
-                            }),
+                            foreach ($repeaters as $key => $repeater) {
+                                $total += $get("items.{$key}.total_amount");
+                            }
+                            $set('grand_total', $total);
+                            return Number::currency($total, 'IDR');
+                        }),
 
-                        Hidden::make('grand_total')
-                            ->default(0)
+                    Hidden::make('grand_total')
+                        ->default(0)
 
                 ])->columnSpanFull()
             ]);
