@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CategoryResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CategoryResource\RelationManagers;
+use Filament\Tables\Columns\TextColumn;
 
 class CategoryResource extends Resource
 {
@@ -56,6 +57,7 @@ class CategoryResource extends Resource
                     FileUpload::make('image')
                         ->image()
                         ->directory('categories'),
+
 
                     Toggle::make('is_active')
                         ->required()

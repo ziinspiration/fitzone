@@ -174,7 +174,6 @@ class OrderResource extends Resource
                                 }
                                 $set('grand_total', $total);
                                 return Number::currency($total, 'IDR');
-
                             }),
 
                         Hidden::make('grand_total')
