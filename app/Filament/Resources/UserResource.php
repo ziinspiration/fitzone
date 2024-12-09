@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\UserResource\RelationManagers\OrdersRelationManager;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
@@ -97,7 +98,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            OrdersRelationManager::class
         ];
     }
 

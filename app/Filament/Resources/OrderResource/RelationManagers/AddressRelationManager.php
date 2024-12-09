@@ -23,30 +23,30 @@ class AddressRelationManager extends RelationManager
             ->schema([
 
                 TextInput::make('first_name')
-                ->required()
-                ->maxLength(255),
+                    ->required()
+                    ->maxLength(255),
 
                 TextInput::make('last_name')
-                ->required()
-                ->maxLength(255),
+                    ->required()
+                    ->maxLength(255),
 
                 TextInput::make('phone')
-                ->required()
-                ->tel()
-                ->maxLength(20),
+                    ->required()
+                    ->tel()
+                    ->maxLength(20),
 
                 TextInput::make('city')
-                ->required()
-                ->maxLength(255),
+                    ->required()
+                    ->maxLength(255),
 
                 TextInput::make('state')
-                ->required()
-                ->maxLength(255),
+                    ->required()
+                    ->maxLength(255),
 
                 TextInput::make('zip_code')
-                ->required()
-                ->numeric()
-                ->maxLength(10),
+                    ->required()
+                    ->numeric()
+                    ->maxLength(10),
 
                 Textarea::make('street-address')
                     ->required()
@@ -60,7 +60,7 @@ class AddressRelationManager extends RelationManager
             ->recordTitleAttribute('street-address')
             ->columns([
                 TextColumn::make('fullname')
-                ->label('Full Name'),
+                    ->label('Full Name'),
 
                 TextColumn::make('phone'),
 
