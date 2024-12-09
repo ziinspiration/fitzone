@@ -97,7 +97,7 @@ class OrderResource extends Resource
                                 'cancelled' =>  'heroicon-m-x-circle',
                             ]),
 
-                            Select::make('currency')
+                        Select::make('currency')
                             ->options([
                                 'idr' => 'IDR',
                                 'usd' => 'USD',
@@ -105,7 +105,7 @@ class OrderResource extends Resource
                             ])
                             ->default('idr')
                             ->required(),
-   
+
                         Select::make('shipping_method')
                             ->options([
                                 'fedex' => 'FedEx',
@@ -117,67 +117,66 @@ class OrderResource extends Resource
                         Textarea::make('notes')
                             ->columnSpanFull()
                     ])->columns(2),
-                      
-                Section::make('Order Items')->schema([
-                    Repeater::make('items')
-                        ->relationship()
-                        ->schema([
 
-                            Select::make('product_id')
-                                ->relationship('product', 'name')
-                                ->searchable()
-                                ->preload()
-                                ->required()
-                                ->distinct()
-                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                ->columnSpan(4)
-                                ->reactive()
-                                ->afterStateUpdated(fn($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
-                                ->afterStateUpdated(fn($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0)),
+                    Section::make('Order Items')->schema([
+                        Repeater::make('items')
+                            ->relationship()
+                            ->schema([
 
-                            TextInput::make('quantity')
-                                ->numeric()
-                                ->required()
-                                ->default(1)
-                                ->minValue(1)
-                                ->columnSpan(2)
-                                ->reactive()
-                                ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount'))),
+                                Select::make('product_id')
+                                    ->relationship('product', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->distinct()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ->columnSpan(4)
+                                    ->reactive()
+                                    ->afterStateUpdated(fn($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
+                                    ->afterStateUpdated(fn($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0)),
 
-                            TextInput::make('unit_amount')
-                                ->numeric()
-                                ->required()
-                                ->disabled()
-                                ->dehydrated()
-                                ->columnSpan(3),
+                                TextInput::make('quantity')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(1)
+                                    ->minValue(1)
+                                    ->columnSpan(2)
+                                    ->reactive()
+                                    ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount'))),
 
-                            TextInput::make('total_amount')
-                                ->numeric()
-                                ->required()
-                                ->dehydrated()
-                                ->columnSpan(3),
+                                TextInput::make('unit_amount')
+                                    ->numeric()
+                                    ->required()
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->columnSpan(3),
 
-                        ])->columns(12),
+                                TextInput::make('total_amount')
+                                    ->numeric()
+                                    ->required()
+                                    ->dehydrated()
+                                    ->columnSpan(3),
 
-                Placeholder::make('grand_total_placeholder')
-                ->label('Grand Total')
-                ->content(function (Get $get, Set $set) {
-                    $total = 0;
-                    if (!$repeaters = $get('items')) {
-                        return $total;
-                    }
+                            ])->columns(12),
 
-                    foreach ($repeaters as $key => $repeater) {
-                        $total += $get("items.{$key}.total_amount");
-                    }
-                    $set('grand_total', $total);
-                    return Number::currency($total, 'IDR');
+                        Placeholder::make('grand_total_placeholder')
+                            ->label('Grand Total')
+                            ->content(function (Get $get, Set $set) {
+                                $total = 0;
+                                if (!$repeaters = $get('items')) {
+                                    return $total;
+                                }
 
-                }),
+                                foreach ($repeaters as $key => $repeater) {
+                                    $total += $get("items.{$key}.total_amount");
+                                }
+                                $set('grand_total', $total);
+                                return Number::currency($total, 'IDR');
+                            }),
 
-                Hidden::make('grand_total')
-                ->default(0)
-                ])
+                        Hidden::make('grand_total')
+                            ->default(0)
+                    ])
                 ])->columnSpanFull()
             ]);
     }
@@ -223,12 +222,12 @@ class OrderResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                    TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                    TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
