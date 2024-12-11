@@ -13,7 +13,8 @@ class ProductDetailPage extends Component
 
     public $slug;
 
-    public function mount($slug) {
+    public function mount($slug)
+    {
         $this->slug = $slug;
     }
 
