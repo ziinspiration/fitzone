@@ -27,6 +27,7 @@ use Filament\Forms\Components\ToggleButtons;
 use App\Filament\Resources\OrderResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
@@ -184,80 +185,88 @@ class OrderResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('user.name')
-                    ->label('Customer')
-                    ->sortable()
-                    ->searchable(),
+{
+    return $table
+        ->columns([
+            TextColumn::make('user.name')
+                ->label('Customer')
+                ->sortable()
+                ->searchable(),
 
-                TextColumn::make('grand_total')
-                    ->numeric()
-                    ->sortable()
-                    ->money('IDR'),
+            TextColumn::make('address.fullname')
+                ->label('Full Name')
+                ->sortable()
+                ->searchable(),
 
-                TextColumn::make('payment_method')
-                    ->searchable()
-                    ->sortable(),
+            TextColumn::make('address.street_address')
+                ->label('Street Address')
+                ->sortable()
+                ->searchable(),
 
-                TextColumn::make('payment_status')
-                    ->searchable()
-                    ->sortable(),
+            TextColumn::make('grand_total')
+                ->numeric()
+                ->sortable()
+                ->money('IDR'),
 
-                TextColumn::make('currency')
-                    ->sortable()
-                    ->searchable(),
+            TextColumn::make('payment_method')
+                ->searchable()
+                ->sortable(),
 
-                TextColumn::make('shipping_method')
-                    ->sortable()
-                    ->searchable(),
+            TextColumn::make('payment_status')
+                ->searchable()
+                ->sortable(),
 
-                SelectColumn::make('status')
-                    ->options([
-                        'new' => 'New',
-                        'processing' => 'Processing',
-                        'shipped' => 'Shipped',
-                        'delivered' => 'Delivered',
-                        'cancelled' => 'Cancelled',
-                    ])
-                    ->searchable()
-                    ->sortable(),
+            TextColumn::make('currency')
+                ->sortable()
+                ->searchable(),
 
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                ActionGroup::make([
-                    ViewAction::make(),
-                    EditAction::make(),
-                    DeleteAction::make()
+            SelectColumn::make('status')
+                ->options([
+                    'new' => 'New',
+                    'processing' => 'Processing',
+                    'shipped' => 'Shipped',
+                    'delivered' => 'Delivered',
+                    'cancelled' => 'Cancelled',
                 ])
+                ->searchable()
+                ->sortable(),
+
+            TextColumn::make('created_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+
+            TextColumn::make('updated_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+        ])
+        ->filters([
+            //
+        ])
+        ->actions([
+            ActionGroup::make([
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make()
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ]);
+}
+
+    
 
     public static function getRelations(): array
     {
         return [
-            //
+            AddressRelationManager::class
         ];
     }
+    
 
     public static function getNavigationBadge(): ?string
     {
@@ -266,7 +275,7 @@ class OrderResource extends Resource
 
     public static function getNavigationBadgeColor(): string|array|null
     {
-        return static::getModel()::count() > 10 ? 'succes' : 'danger';
+        return static::getModel()::count() > 10 ? 'success' : 'danger';
     }
 
     public static function getPages(): array

@@ -10,8 +10,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AddressRelationManager extends RelationManager
 {
@@ -21,7 +19,6 @@ class AddressRelationManager extends RelationManager
     {
         return $form
             ->schema([
-
                 TextInput::make('first_name')
                     ->required()
                     ->maxLength(255),
@@ -48,7 +45,7 @@ class AddressRelationManager extends RelationManager
                     ->numeric()
                     ->maxLength(10),
 
-                Textarea::make('street-address')
+                Textarea::make('street_address') 
                     ->required()
                     ->columnSpanFull(),
             ]);
@@ -57,10 +54,11 @@ class AddressRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('street-address')
+            ->recordTitleAttribute('street_address') 
             ->columns([
                 TextColumn::make('fullname')
-                    ->label('Full Name'),
+                    ->label('Full Name')
+                    ->getStateUsing(fn ($record) => $record->fullname ?? 'No Name'),
 
                 TextColumn::make('phone'),
 
@@ -70,10 +68,9 @@ class AddressRelationManager extends RelationManager
 
                 TextColumn::make('zip_code'),
 
-                TextColumn::make('street_address'),
-            ])
-            ->filters([
-                //
+                TextColumn::make('street_address')
+                    ->label('Street Address')
+                    ->getStateUsing(fn ($record) => $record->street_address ?? 'No Address'),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
