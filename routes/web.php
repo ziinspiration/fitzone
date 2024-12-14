@@ -28,7 +28,8 @@ Route::get('/my-orders/{order}', MyOrderDetailPage::class);
 
 
 Route::get('/login', LoginPage::class);
-Route::get('/register', RegisterPage::class);
+Route::get('/register', [RegisterPage::class, 'render'])->name('signup.form');
+Route::post('/register', [RegisterPage::class, 'register'])->name('signup');
 Route::get('/forgot', ForgotPasswordPage::class);
 Route::get('/reset', ResetPasswordPage::class);
 
