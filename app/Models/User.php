@@ -9,7 +9,12 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+<<<<<<< Updated upstream
     use HasFactory, Notifiable;
+=======
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use  HasFactory, Notifiable;
+>>>>>>> Stashed changes
 
     protected $fillable = [
         'first_name',
