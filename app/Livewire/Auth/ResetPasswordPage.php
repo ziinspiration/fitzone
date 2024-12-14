@@ -3,6 +3,9 @@
 namespace App\Livewire\Auth;
 
 use Livewire\Component;
+use Livewire\Attributes\Title;
+
+#[Title('Reset Password - Fitzone')]
 
 class ResetPasswordPage extends Component
 {

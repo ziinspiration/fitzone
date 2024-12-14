@@ -26,14 +26,18 @@ Route::get('/checkout', CheckoutPage::class);
 Route::get('/my-orders', MyOrdersPage::class);
 Route::get('/my-orders/{order}', MyOrderDetailPage::class);
 
-Route::get('/login', LoginPage::class)->name('login');
+Route::get('/login', [LoginPage::class, 'render'])->name('login');
+Route::post('/login', [LoginPage::class, 'login'])->name('login.submit');
+Route::post('/logout', [LoginPage::class, 'logout'])->name('logout');
+
 Route::get('/register', [RegisterPage::class, 'render'])->name('register.form');
 Route::post('/register', [RegisterPage::class, 'register'])->name('signup');
-Route::get('register/google', [RegisterPage::class, 'redirectToGoogle'])->name('register.google');
-Route::get('register/google/callback', [RegisterPage::class, 'handleGoogleCallback']);
+Route::get('/register/google', [RegisterPage::class, 'redirectToGoogle'])->name('register.google');
+Route::get('/register/google/callback', [RegisterPage::class, 'handleGoogleCallback']);
 Route::get('/verification', [RegisterPage::class, 'showVerificationPage'])->name('verification');
 Route::post('/verification', [RegisterPage::class, 'verifyOtp'])->name('verification.otp');
 Route::post('/verification/resend', [RegisterPage::class, 'resendOtp'])->name('verification.resend');
+
 Route::get('/forgot', ForgotPasswordPage::class);
 Route::get('/reset', ResetPasswordPage::class);
 
