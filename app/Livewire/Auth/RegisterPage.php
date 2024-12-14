@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class RegisterPage extends Component
 {
@@ -29,7 +32,7 @@ class RegisterPage extends Component
                 'string',
                 'confirmed',
                 'min:8',
-                'regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/'
+                'regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/',
             ],
         ], [
             'email.unique' => 'Email sudah terdaftar.',
@@ -67,6 +70,42 @@ class RegisterPage extends Component
             return redirect()->back()->with('error', 'Terjadi kesalahan saat pendaftaran: ' . $e->getMessage())->withInput();
         }
     }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            $nameParts = explode(' ', $googleUser->getName());
+            $firstName = $nameParts[0];
+            $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+
+            $user = User::where('email', $googleUser->getEmail())->first();
+
+            if ($user) {
+                return redirect()->route('register')->with('googleError', 'Email sudah terdaftar.');
+            }
+
+            $user = User::create([
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $googleUser->getEmail(),
+                'password' => bcrypt(Str::random(16)),
+                'is_verified' => true,
+                'avatar' => $googleUser->getAvatar(),
+            ]);
+
+            return redirect()->route('login')->with('googleSuccess', 'Registrasi dengan akun Google berhasil.');
+        } catch (\Exception $e) {
+            return redirect()->route('register')->with('googleError', 'Terjadi kesalahan saat registrasi dengan Google: ' . $e->getMessage());
+        }
+    }
+
 
     public function showVerifyPage()
     {

@@ -12,9 +12,9 @@
                 </a>
               </p>
             </div>
-  
+
             <hr class="my-5 border-slate-300">
-  
+
             <!-- Form -->
             <form>
               <div class="grid gap-y-4">
@@ -32,7 +32,7 @@
                   <p class="hidden text-xs text-red-600 mt-2" id="email-error">Please include a valid email address so we can get back to you</p>
                 </div>
                 <!-- End Form Group -->
-  
+
                 <!-- Form Group -->
                 <div>
                   <div class="flex justify-between items-center">
@@ -58,3 +58,20 @@
         </div>
     </div>
   </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('googleSuccess'))
+    <script>
+        Swal.fire({
+            title: 'Berhasil!',
+            text: '{{ session('googleSuccess') }}',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{{ route('login') }}';
+            }
+        });
+    </script>
+@endif
