@@ -75,3 +75,18 @@
         });
     </script>
 @endif
+
+@if(session('success2'))
+    <script>
+        Swal.fire({
+            title: 'Berhasil!',
+            text: '{{ session('success2') }}',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{{ route('login') }}';
+            }
+        });
+    </script>
+@endif

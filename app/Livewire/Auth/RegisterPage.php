@@ -53,7 +53,7 @@ class RegisterPage extends Component
                 'verification_code' => $verificationCode,
             ]);
 
-            Session::put('verify_email', $user->email);
+            Session::put('verification_email', $user->email);
 
             $pantun = [
                 "Lari pagi tubuh sehat,\nLihat langit cerah memancar.\nSemangat terus, jangan patah,\nImpian besar pasti tercapai!",
@@ -65,7 +65,7 @@ class RegisterPage extends Component
 
             Mail::to($user->email)->send(new VerifyEmail($user, $verificationCode, $randomPantun));
 
-            return redirect()->route('verify')->with('success', 'Pendaftaran berhasil. Silakan periksa email Anda untuk kode verifikasi.');
+            return redirect()->route('verification')->with('success', 'Pendaftaran berhasil. Silakan periksa email Anda untuk kode verifikasi.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat pendaftaran: ' . $e->getMessage())->withInput();
         }
@@ -106,11 +106,10 @@ class RegisterPage extends Component
         }
     }
 
-
-    public function showVerifyPage()
+    public function showVerificationPage()
     {
-        $email = Session::get('verify_email');
-        return view('auth.verify', compact('email'));
+        $email = Session::get('verification_email');
+        return view('livewire.auth.otpverify-page', compact('email'));
     }
 
     public function verifyOtp(Request $request)
@@ -127,11 +126,11 @@ class RegisterPage extends Component
             $user->verification_code = null;
             $user->save();
 
-            Session::forget('verify_email');
+            Session::forget('verification_email');
 
             Mail::to($user->email)->send(new VerifySuccess($user));
 
-            return redirect()->route('signin')->with('success2', 'Akun Anda berhasil diverifikasi. Silakan masuk.');
+            return redirect()->route('login')->with('success2', 'Akun Anda berhasil diverifikasi. Silakan masuk.');
         } else {
             return redirect()->back()->with('error', 'Kode OTP salah atau tidak valid.');
         }
@@ -139,7 +138,7 @@ class RegisterPage extends Component
 
     public function resendOtp(Request $request)
     {
-        $email = Session::get('verify_email');
+        $email = Session::get('verification_email');
 
         if (!$email) {
             return redirect()->route('signup')->with('error', 'Sesi verifikasi telah kedaluwarsa.');
@@ -156,7 +155,7 @@ class RegisterPage extends Component
 
             Mail::to($user->email)->send(new VerifyEmail($user, $newOtp, $pantun));
 
-            return redirect()->route('verify')->with('success', 'Kode OTP baru telah dikirim ke email Anda.');
+            return redirect()->route('verification')->with('success', 'Kode OTP baru telah dikirim ke email Anda.');
         }
 
         return redirect()->route('signup')->with('error', 'Email tidak ditemukan.');
