@@ -1,14 +1,14 @@
 <div>
 
     {{-- Hero Section Start --}}
-    <div class="w-full h-screen bg-gradient-to-r from-blue-200 to-cyan-200 py-10 px-4 sm:px-6 lg:px-8 mx-auto">
+    {{-- <div class="w-full h-screen bg-gradient-to-r from-blue-200 to-cyan-200 py-10 px-4 sm:px-6 lg:px-8 mx-auto">
         <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Grid -->
             <div class="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
                 <div>
                     <h1
                         class="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
-                        Start your journey with <span class="text-blue-600">DCodeMania</span></h1>
+                        Start your journey with <span class="text-blue-600">FitZone</span></h1>
                     <p class="mt-3 text-lg text-gray-800 dark:text-gray-400">Purchase wide varities of electronics
                         products like Smartphones, Laptops, Smartwatches, Television and many more.</p>
 
@@ -196,34 +196,106 @@
             </div>
             <!-- End Grid -->
         </div>
-    </div>
+    </div> --}}
     {{-- Hero Section End --}}
 
 
+    {{-- Hero Section Start V.2 with Carousel --}}
+    <section 
+        x-data="carousel()" 
+        x-init="startCarousel()"
+        class="bg-white dark:bg-gray-900 pt-20 relative">
+        <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+            <div class="mr-auto place-self-center lg:col-span-7">
+                <h2 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
+                    With <span class="text-primary-700">FitZone</span>, Discover Quality Shoes at Affordable Prices!
+                </h2>
+                <a href="#" class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+                    Shop Now!
+                    <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+                <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                    Speak to Sales
+                </a> 
+            </div>
+            <div class="hidden lg:mt-0 lg:col-span-5 lg:flex relative h-[600px] overflow-hidden">
+                <div class="relative w-full h-full">
+                    <template x-for="(image, index) in images" :key="index">
+                        <img 
+                            x-show="currentIndex === index"
+                            x-transition:enter="transition transform duration-700 ease-in-out"
+                            x-transition:enter-start="opacity-0 translate-y-full"
+                            x-transition:enter-end="opacity-100 translate-y-0"
+                            x-transition:leave="transition transform duration-700 ease-in-out"
+                            x-transition:leave-start="opacity-100 translate-y-0"
+                            x-transition:leave-end="opacity-0 -translate-y-full"
+                            :src="image" 
+                            alt="Shoe Image" 
+                            class="w-full h-auto object-contain"
+                        >
+                    </template>
+                </div>
+            </div>                
+        </div>
+        </section>
+
+        <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+        <script>
+        function carousel() {
+            return {
+                images: [
+                    'https://www.adidas.co.id/media/catalog/product/j/i/ji1458_2_footwear_photography_side20lateral20view_grey.jpg',
+                    'https://www.adidas.co.id/media/catalog/product/i/f/if3502_2_footwear_photography_side20lateral20view_grey.jpg',
+                    'https://www.adidas.co.id/media/catalog/product/j/i/ji1547_2_footwear_photography_side20lateral20view_grey.jpg'
+                ],
+                currentIndex: 0,
+                carouselInterval: null,
+                startCarousel() {
+                    this.carouselInterval = setInterval(() => {
+                        this.currentIndex = (this.currentIndex + 1) % this.images.length;
+                    }, 3000); // Change image every 3 seconds
+                },
+                stopCarousel() {
+                    clearInterval(this.carouselInterval);
+                }
+            }
+        }
+    </script>
+    {{-- Hero Section End V.2 --}}
+
 
     {{-- Brand Section Start --}}
-    <section class="py-20">
+    <section class="py-20 bg-white ">
         <div class="max-w-xl mx-auto">
             <div class="text-center ">
                 <div class="relative flex flex-col items-center">
-                    <h1 class="text-5xl font-bold dark:text-gray-200"> Browse Popular<span class="text-blue-500">
+                    <h1 class="text-5xl font-bold dark:text-gray-200 mb-5"> Browse Popular<span class="text-primary-700">
                             Brands
                         </span> </h1>
-                    <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
-                        <div class="flex-1 h-2 bg-blue-200">
+                    {{-- <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
+                        <div class="flex-1 h-2 bg-primary-100">
                         </div>
-                        <div class="flex-1 h-2 bg-blue-400">
+                        <div class="flex-1 h-2 bg-primary-200">
                         </div>
-                        <div class="flex-1 h-2 bg-blue-600">
+                        <div class="flex-1 h-2 bg-primary-600">
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
-                <p class="mb-12 text-base text-center text-gray-500">
+                <p class="mb-3 text-base text-center text-gray-500">
                     Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?
                     Pariatur
                     numquam, odio quod nobis ipsum ex cupiditate?
                 </p>
             </div>
+        </div>
+        <div class="flex items-center justify-center py-4 md:py-8 flex-wrap">
+            <button type="button" class="text-primary-700 hover:text-white border border-primary-700 bg-white hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:bg-gray-900 dark:focus:ring-blue-800">All Brand</button>
+            <button type="button" class="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Adidas</button>
+            <button type="button" class="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Nike</button>
+            <button type="button" class="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Puma</button>
+            <button type="button" class="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Asics</button>
         </div>
         <div class="justify-center max-w-6xl px-4 py-4 mx-auto lg:py-0">
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-4 md:grid-cols-2">
@@ -250,20 +322,20 @@
 
 
     {{-- Category Section Start --}}
-    <div class="bg-orange-200 py-20">
+    <div class="bg-white py-20">
         <div class="max-w-xl mx-auto">
             <div class="text-center ">
                 <div class="relative flex flex-col items-center">
-                    <h1 class="text-5xl font-bold dark:text-gray-200"> Browse <span class="text-blue-500"> Categories
+                    <h1 class="text-5xl font-bold dark:text-gray-200 mb-5"> Browse <span class="text-primary-700"> Categories
                         </span> </h1>
-                    <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
+                    {{-- <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
                         <div class="flex-1 h-2 bg-blue-200">
                         </div>
                         <div class="flex-1 h-2 bg-blue-400">
                         </div>
                         <div class="flex-1 h-2 bg-blue-600">
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <p class="mb-12 text-base text-center text-gray-500">
                     Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?
@@ -271,6 +343,14 @@
                     numquam, odio quod nobis ipsum ex cupiditate?
                 </p>
             </div>
+        </div>
+
+        <div class="flex items-center justify-center py-4 md:py-8 flex-wrap">
+            <button type="button" class="text-primary-700 hover:text-white border border-primary-700 bg-white hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:bg-gray-900 dark:focus:ring-blue-800">All Category</button>
+            <button type="button" class="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Running</button>
+            <button type="button" class="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Training</button>
+            <button type="button" class="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Tenis</button>
+            <button type="button" class="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Athletics</button>
         </div>
 
         <div class="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto">
@@ -283,8 +363,8 @@
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center">
                                     <img class="h-[2.375rem] w-[2.375rem] rounded-full"
-                                        src="{{ url('storaeg', $category->image) }}" alt="{{ $category->name }}"
-                                        alt="Image Description">
+                                         src="{{ isset($category->image) ? url('storage/' . $category->image) : asset('images/default-image.jpg') }}"
+                                         alt="{{ $category->name }}">
                                     <div class="ms-3">
                                         <h3
                                             class="group-hover:text-blue-600 font-semibold text-gray-800 dark:group-hover:text-gray-400 dark:text-gray-200">
@@ -311,23 +391,80 @@
     {{-- Category Section End --}}
 
 
+
+    {{-- Gallery Section Start --}}
+    <section class="py-20 bg-white">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="grid gap-4">
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://www.adidas.co.id/media/catalog/product/j/d/jd9563_1_hardware_photography_front20center20view_grey.jpg" alt="">
+                    </div>
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://www.adidas.co.id/media/catalog/product/g/z/gz5922_sl_ecom.jpg" alt="">
+                    </div>
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://www.adidas.co.id/media/catalog/product/j/i/ji1547_2_footwear_photography_side20lateral20view_grey.jpg" alt="">
+                    </div>
+                </div>
+                <div class="grid gap-4">
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/9919a5c7-8cf4-4135-a7d5-706800cc3394/W+NIKE+CORTEZ+VNTG.png" alt="">
+                    </div>
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg" alt="">
+                    </div>
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-5.jpg" alt="">
+                    </div>
+                </div>
+                <div class="grid gap-4">
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/94d89d78-d6b7-47b4-96cc-7fabef2775eb/AIR+FORCE+1+LOW.png" alt="">
+                    </div>
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-7.jpg" alt="">
+                    </div>
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-8.jpg" alt="">
+                    </div>
+                </div>
+                <div class="grid gap-4">
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-9.jpg" alt="">
+                    </div>
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-10.jpg" alt="">
+                    </div>
+                    <div>
+                        <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-11.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{-- Gallery Section End --}}
+
+
+    
+
     {{-- Category Review Start --}}
     <section class="py-14 font-poppins dark:bg-gray-800">
         <div class="max-w-6xl px-4 py-6 mx-auto lg:py-4 md:px-6">
             <div class="max-w-xl mx-auto">
                 <div class="text-center ">
                     <div class="relative flex flex-col items-center">
-                        <h1 class="text-5xl font-bold dark:text-gray-200"> Customer <span class="text-blue-500">
+                        <h1 class="text-5xl font-bold dark:text-gray-200 mb-5"> Customer <span class="text-primary-700">
                                 Reviews
                             </span> </h1>
-                        <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
+                        {{-- <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
                             <div class="flex-1 h-2 bg-blue-200">
                             </div>
                             <div class="flex-1 h-2 bg-blue-400">
                             </div>
                             <div class="flex-1 h-2 bg-blue-600">
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <p class="mb-12 text-base text-center text-gray-500">
                         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?

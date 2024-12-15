@@ -9,14 +9,12 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "anhskohbo/no-captcha": "*",
-        "filament/filament": "^3.2.130",
-        "google/recaptcha": "^1.3",
-        "laravel/framework": "^11.0",
-        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
-        "phpmailer/phpmailer": "^6.9"
+        "php": "^8.2",
+        "laravel/framework": "^11.9",
+        "filament/filament": "^3.0",
+        "illuminate/console": "^10.17.0",
+        "nunomaduro/termwind": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
