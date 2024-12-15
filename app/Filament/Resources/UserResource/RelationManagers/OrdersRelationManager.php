@@ -59,18 +59,18 @@ class OrdersRelationManager extends RelationManager
                     ->label('Order Date')
                     ->dateTime(),
             ])
-            ->filters([])
-            ->headerActions([])
+            ->filters([]) // Bisa ditambahkan filter jika diperlukan
+            ->headerActions([]) // Bisa ditambahkan header actions jika diperlukan
             ->actions([
                 Action::make('View Order')
                     ->url(fn(Order $record): string => OrderResource::getUrl('view', ['record' => $record]))
                     ->color('info')
                     ->icon('heroicon-o-eye'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make(), // Aksi untuk menghapus data
             ])
-            ->bulkActions([
+            ->bulkActions([ // Menambahkan bulk actions untuk penghapusan massal
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make(), // Bulk action untuk delete
                 ]),
             ]);
     }
