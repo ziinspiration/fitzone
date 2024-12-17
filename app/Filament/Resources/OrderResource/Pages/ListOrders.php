@@ -27,7 +27,7 @@ class ListOrders extends ListRecords
             OrderStats::class
         ];
     }
-
+   
     public function getTabs(): array
     {
         return [
@@ -40,5 +40,5 @@ class ListOrders extends ListRecords
 
         ];
     }
-
+   
 }

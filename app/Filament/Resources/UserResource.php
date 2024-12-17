@@ -23,7 +23,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'full_name';
     protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
@@ -130,8 +130,9 @@ class UserResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'email'];
+        return ['first_name', 'last_name', 'email', 'full_name'];
     }
+
 
     public static function getPages(): array
     {
@@ -141,4 +142,12 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+
+    public static function getRecordTitle($record): ?string
+    {
+        return $record->full_name ?? 'No Name';
+    }
+
+
+
 }
