@@ -59,7 +59,7 @@ class LatestOrders extends BaseWidget
                     ->sortable()
                     ->badge()
                     ->searchable(),
-
+                    
                 TextColumn::make('created_at')
                     ->label('Order Date')
                     ->dateTime(),

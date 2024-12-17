@@ -38,8 +38,9 @@ Route::get('/verification', [RegisterPage::class, 'showVerificationPage'])->name
 Route::post('/verification', [RegisterPage::class, 'verifyOtp'])->name('verification.otp');
 Route::post('/verification/resend', [RegisterPage::class, 'resendOtp'])->name('verification.resend');
 
-Route::get('/forgot', ForgotPasswordPage::class);
-Route::get('/reset', ResetPasswordPage::class);
+Route::get('/forgot-password', App\Livewire\Auth\ForgotPasswordPage::class)->name('forgot-password');
+Route::get('/new-password', ResetPasswordPage::class)->name('password.reset');
+
 
 Route::get('/success', SuccessPage::class);
 Route::get('/cancel', CancelPage::class);

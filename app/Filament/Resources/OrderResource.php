@@ -258,7 +258,7 @@ class OrderResource extends Resource
         ]);
 }
 
-
+    
 
     public static function getRelations(): array
     {
@@ -266,7 +266,7 @@ class OrderResource extends Resource
             AddressRelationManager::class
         ];
     }
-
+    
 
     public static function getNavigationBadge(): ?string
     {

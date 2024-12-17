@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ $title ?? 'Fitzone' }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles()
+</head>
+<body class="bg-slate-200 dark:bg-slate-700">
 <div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-gray-800 shadow-2xl rounded-xl border border-gray-700 overflow-hidden">
         <div class="p-8">
@@ -114,3 +125,7 @@
     });
     </script>
 @endif
+@livewire('partials.footer')
+@livewireScripts()
+</body>
+</html>

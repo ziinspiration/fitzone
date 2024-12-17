@@ -45,7 +45,7 @@ class AddressRelationManager extends RelationManager
                     ->numeric()
                     ->maxLength(10),
 
-                Textarea::make('street_address')
+                Textarea::make('street_address') 
                     ->required()
                     ->columnSpanFull(),
             ]);
@@ -54,7 +54,7 @@ class AddressRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('street_address')
+            ->recordTitleAttribute('street_address') 
             ->columns([
                 TextColumn::make('fullname')
                     ->label('Full Name')
