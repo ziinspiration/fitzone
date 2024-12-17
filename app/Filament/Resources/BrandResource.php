@@ -58,7 +58,9 @@ class BrandResource extends Resource
 
                     FileUpload::make('image')
                         ->image()
-                        ->directory('brands'),
+                        ->directory('brands')
+                        ->preserveFilenames()
+                        ->visibility('public'),
 
                     Toggle::make('is_active')
                         ->required()
@@ -74,7 +76,8 @@ class BrandResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
 
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->disk('public'),
 
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
@@ -86,6 +89,7 @@ class BrandResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
