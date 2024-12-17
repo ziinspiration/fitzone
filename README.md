@@ -1,6 +1,6 @@
 ## Contributors
 
-thanks for all contributors ❤
+Technovation
 
 <table>
   <tbody>
@@ -13,25 +13,26 @@ thanks for all contributors ❤
         </a>
       </td>
       <td align='center'>
+         <a href='https://github.com/dzikrisee'>
+          <img src='https://avatars.githubusercontent.com/dzikrisee' width=100 />
           <br />
-          <sub><b></b></sub>
+          <sub><b>Dzikri Setiawan</b></sub>
         </a>
       </td>
       <td align='center'>
+        <a href='https://github.com/Muhamadafat'>
+          <img src='https://avatars.githubusercontent.com/Muhamadafat' width=100 />
           <br />
-         <sub><b></b></sub>
+          <sub><b>Muhamad Alfath Septian</b></sub>
         </a>
       </td>
     </tr>
     <tr>
       <td align='center'>
+          <a href='https://github.com/DaffaRiyadi03'>
+          <img src='https://avatars.githubusercontent.com/DaffaRiyadi03' width=100 />
           <br />
-          <sub><b></b></sub>
-        </a>
-      </td>
-      <td align='center'>
-          <br />
-         <sub><b></b></sub>
+          <sub><b>Daffa Riyadi</b></sub>
         </a>
       </td>
     </tr>

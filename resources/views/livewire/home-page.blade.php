@@ -201,8 +201,8 @@
 
 
     {{-- Hero Section Start V.2 with Carousel --}}
-    <section 
-        x-data="carousel()" 
+    <section
+        x-data="carousel()"
         x-init="startCarousel()"
         class="bg-white dark:bg-gray-900 pt-20 relative">
         <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
@@ -218,12 +218,12 @@
                 </a>
                 <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                     Speak to Sales
-                </a> 
+                </a>
             </div>
             <div class="hidden lg:mt-0 lg:col-span-5 lg:flex relative h-[600px] overflow-hidden">
                 <div class="relative w-full h-full">
                     <template x-for="(image, index) in images" :key="index">
-                        <img 
+                        <img
                             x-show="currentIndex === index"
                             x-transition:enter="transition transform duration-700 ease-in-out"
                             x-transition:enter-start="opacity-0 translate-y-full"
@@ -231,13 +231,13 @@
                             x-transition:leave="transition transform duration-700 ease-in-out"
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 -translate-y-full"
-                            :src="image" 
-                            alt="Shoe Image" 
+                            :src="image"
+                            alt="Shoe Image"
                             class="w-full h-auto object-contain"
                         >
                     </template>
                 </div>
-            </div>                
+            </div>
         </div>
         </section>
 
@@ -321,7 +321,6 @@
     {{-- Brand Section End --}}
 
 
-
     {{-- Category Section Start --}}
     <div class="bg-white py-20">
         <div class="max-w-xl mx-auto">
@@ -337,27 +336,14 @@
                         <div class="flex-1 h-2 bg-blue-600">
                         </div>
                     </div> --}}
-
-{{-- Category Section Start --}}
-<div class="bg-orange-200 py-20">
-    <div class="max-w-xl mx-auto">
-        <div class="text-center">
-            <div class="relative flex flex-col items-center">
-                <h1 class="text-5xl font-bold dark:text-gray-200"> Browse <span class="text-blue-500"> Categories </span> </h1>
-                <div class="flex w-40 mt-2 mb-6 overflow-hidden rounded">
-                    <div class="flex-1 h-2 bg-blue-200"></div>
-                    <div class="flex-1 h-2 bg-blue-400"></div>
-                    <div class="flex-1 h-2 bg-blue-600"></div>
-
                 </div>
+                <p class="mb-12 text-base text-center text-gray-500">
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?
+                    Pariatur
+                    numquam, odio quod nobis ipsum ex cupiditate?
+                </p>
             </div>
-            <p class="mb-12 text-base text-center text-gray-500">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus magni eius eaque?
-                Pariatur numquam, odio quod nobis ipsum ex cupiditate?
-            </p>
         </div>
-    </div>
-
 
         <div class="flex items-center justify-center py-4 md:py-8 flex-wrap">
             <button type="button" class="text-primary-700 hover:text-white border border-primary-700 bg-white hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:bg-gray-900 dark:focus:ring-blue-800">All Category</button>
@@ -393,42 +379,16 @@
                                         stroke-linejoin="round">
                                         <path d="m9 18 6-6-6-6" />
                                     </svg>
-
-    <div class="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto">
-        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-            @foreach ($categories as $category)
-                <a class="group flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-slate-900 dark:border-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                    href="/products?selected_categories[0]={{ $category->id }}" wire:key='{{ $category->id }}'>
-                    <div class="p-4 md:p-5">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center">
-                                <!-- Perbaiki URL gambar -->
-                                <img class="h-[5rem] w-[5rem] rounded-full"
-                                    src="{{ url('storage', $category->image) }}" alt="{{ $category->name }}"
-                                    alt="Image Description">
-                                <div class="ms-3">
-                                    <h3 class="group-hover:text-blue-600 font-semibold text-gray-800 dark:group-hover:text-gray-400 dark:text-gray-200">
-                                        {{ $category->name }}
-                                    </h3>
-
                                 </div>
                             </div>
-                            <div class="ps-3">
-                                <svg class="flex-shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg"
-                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="m9 18 6-6-6-6" />
-                                </svg>
-                            </div>
                         </div>
-                    </div>
-                </a>
-            @endforeach
+                    </a>
+                @endforeach
+            </div>
         </div>
+
     </div>
-</div>
-{{-- Category Section End --}}
+    {{-- Category Section End --}}
 
 
 
@@ -486,7 +446,7 @@
     {{-- Gallery Section End --}}
 
 
-    
+
 
     {{-- Category Review Start --}}
     <section class="py-14 font-poppins dark:bg-gray-800">

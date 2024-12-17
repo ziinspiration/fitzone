@@ -23,17 +23,18 @@ class Order extends Model
         'notes'
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function items(){
+    public function items()
+    {
         return $this->hasMany(OrderItem::class);
     }
 
     public function address()
     {
-    return $this->hasOne(Address::class);
+        return $this->hasOne(Address::class);
     }
-
 }

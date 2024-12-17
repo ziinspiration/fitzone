@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Livewire\Attributes\Title;
+
+#[Title('Sign Up Page - Fitzone')]
 
 class RegisterPage extends Component
 {
@@ -51,6 +54,7 @@ class RegisterPage extends Component
                 'password' => Hash::make($validatedData['password']),
                 'is_verified' => false,
                 'verification_code' => $verificationCode,
+                'role_id' => 2,
             ]);
 
             Session::put('verification_email', $user->email);
@@ -88,7 +92,8 @@ class RegisterPage extends Component
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if ($user) {
-                return redirect()->route('register')->with('googleError', 'Email sudah terdaftar.');
+                Auth::login($user);
+                return redirect('/')->with('googleSuccess', 'Login dengan akun Google berhasil.');
             }
 
             $user = User::create([
@@ -98,9 +103,12 @@ class RegisterPage extends Component
                 'password' => bcrypt(Str::random(16)),
                 'is_verified' => true,
                 'avatar' => $googleUser->getAvatar(),
+                'role_id' => 2,
             ]);
 
-            return redirect()->route('login')->with('googleSuccess', 'Registrasi dengan akun Google berhasil.');
+            Auth::login($user);
+
+            return redirect('/')->with('googleSuccess', 'Registrasi dan login dengan akun Google berhasil.');
         } catch (\Exception $e) {
             return redirect()->route('register')->with('googleError', 'Terjadi kesalahan saat registrasi dengan Google: ' . $e->getMessage());
         }
