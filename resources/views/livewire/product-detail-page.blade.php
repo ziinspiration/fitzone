@@ -8,7 +8,7 @@
                             <img x-bind:src="mainImage" alt="{{ $product->name }}"
                                 class="object-cover w-full lg:h-full">
                         </div>
-                        <div class="flex-wrap hidden md:flex">
+                        <div class="flex-wrap hidden md:flex z-10">
                             @forelse ($product->images as $image)
                                 <div class="w-1/2 p-2 sm:w-1/4" x-on:click="mainImage='{{ url('storage', $image) }}'">
                                     <img src="{{ url('storage', $image) }}" alt="{{ $product->name }}"
