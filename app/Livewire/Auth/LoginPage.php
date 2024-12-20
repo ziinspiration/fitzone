@@ -38,13 +38,13 @@ class LoginPage extends Component
             'remoteip' => $request->ip()
         ]);
 
-        $verifyResponse = Http::asForm()
-            ->withOptions(['verify' => false])  // Disable SSL verification
-            ->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => $secretKey,
-                'response' => $recaptchaResponse,
-                'remoteip' => $request->ip()
-            ]);
+        //        $verifyResponse = Http::asForm()
+        //            ->withOptions(['verify' => false])  // Disable SSL verification
+        //            ->post('https://www.google.com/recaptcha/api/siteverify', [
+        //                'secret' => $secretKey,
+        //                'response' => $recaptchaResponse,
+        //                'remoteip' => $request->ip()
+        //            ]);
 
 
         $recaptchaResult = $verifyResponse->json();
