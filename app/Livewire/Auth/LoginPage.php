@@ -3,14 +3,6 @@
 namespace App\Livewire\Auth;
 
 use Livewire\Component;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Livewire\Attributes\Title;
-use Illuminate\Support\Facades\Http;
-
-#[Title('Sign In Page - Fitzone')]
 
 class LoginPage extends Component
 {

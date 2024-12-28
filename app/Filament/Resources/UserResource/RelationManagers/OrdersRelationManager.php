@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
-use App\Models\Order;
-use App\Filament\Resources\OrderResource;
+use App\Models\Order; // Pastikan namespace model Order diimpor
+use App\Filament\Resources\OrderResource; // Impor OrderResource
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -59,18 +59,18 @@ class OrdersRelationManager extends RelationManager
                     ->label('Order Date')
                     ->dateTime(),
             ])
-            ->filters([]) // Bisa ditambahkan filter jika diperlukan
-            ->headerActions([]) // Bisa ditambahkan header actions jika diperlukan
+            ->filters([])
+            ->headerActions([])
             ->actions([
                 Action::make('View Order')
                     ->url(fn(Order $record): string => OrderResource::getUrl('view', ['record' => $record]))
                     ->color('info')
                     ->icon('heroicon-o-eye'),
-                Tables\Actions\DeleteAction::make(), // Aksi untuk menghapus data
+                Tables\Actions\DeleteAction::make(),
             ])
-            ->bulkActions([ // Menambahkan bulk actions untuk penghapusan massal
+            ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(), // Bulk action untuk delete
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

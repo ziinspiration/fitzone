@@ -15,7 +15,6 @@
                 </tr>
               </thead>
               <tbody>
-
                 @forelse ($cart_items as $item)
                 <tr wire:key='{{ $item['product_id'] }}'>
                   <td class="py-4">
@@ -46,7 +45,6 @@
                   <td colspan="5" class="text-center py-4 text-4xl font-semibold text-slate-500">No items available in cart!</td>
                 </tr>
                 @endforelse
-
               </tbody>
             </table>
           </div>

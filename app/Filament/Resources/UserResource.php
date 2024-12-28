@@ -23,84 +23,50 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $recordTitleAttribute = 'full_name';
+    protected static ?string $recordTitleAttribute = 'name';
     protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('first_name')
-                    ->required(),
-
-                Forms\Components\TextInput::make('last_name')
+                Forms\Components\TextInput::make('name')
                     ->required(),
 
                 Forms\Components\TextInput::make('email')
-                    ->label('Email Address')
+                    ->label('Email Addres')
                     ->email()
                     ->maxlength(255)
                     ->unique(ignoreRecord: true)
                     ->required(),
 
-                Forms\Components\DateTimePicker::make('created_at')
-                    ->label('Created At')
+                Forms\Components\DateTimePicker::make('email_verified_at')
+                    ->label('Email Verified At')
                     ->default(now()),
-
-                Forms\Components\DateTimePicker::make('updated_at')
-                    ->label('Updated At')
-                    ->default(now()),
-
-                Forms\Components\Select::make('role_id')
-                    ->label('Role')
-                    ->options(\App\Models\Role::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->required(),
 
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->revealable()
-                    ->nullable()
-                    ->label('Password')
-                    ->required(function ($get, $record) {
-                        return !$record || !$record->password;
-                    })
-                    ->hidden(function ($get, $record) {
-                        return $record && $record->password;
-                    })
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        if ($state) {
-                            $set(bcrypt($state));
-                        }
-                    }),
 
-                Forms\Components\Hidden::make('is_verified')
-                    ->default(1),
+
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('first_name')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('last_name')
+                Tables\Columns\TextColumn::make('name')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('role.name')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
             ])
@@ -109,9 +75,19 @@ class UserResource extends Resource
             ])
             ->actions([
 
+                // Fungsi Untuk menggabungkan button
+
+                // Tables\Actions\ActionGroup::make([
+                //     Tables\Actions\EditAction::make(),
+                //     Tables\Actions\DeleteAction::make(),
+                //     Tables\Actions\ViewAction::make(),
+                // ])
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ViewAction::make(),
+
+
 
             ])
             ->bulkActions([
@@ -130,9 +106,8 @@ class UserResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['first_name', 'last_name', 'email', 'full_name'];
+        return ['name', 'email'];
     }
-
 
     public static function getPages(): array
     {
@@ -142,12 +117,4 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
-
-    public static function getRecordTitle($record): ?string
-    {
-        return $record->full_name ?? 'No Name';
-    }
-
-
-
 }

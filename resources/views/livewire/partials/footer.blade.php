@@ -3,13 +3,13 @@
       <!-- Grid -->
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
         <div class="col-span-full lg:col-span-1">
-          <a class="flex-none text-xl font-semibold text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#" aria-label="Brand">FitZone</a>
+          <a class="flex-none text-xl font-semibold text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#" aria-label="Brand">DCodeMania</a>
         </div>
         <!-- End Col -->
-
+  
         <div class="col-span-1">
           <h4 class="font-semibold text-gray-100">Product</h4>
-
+  
           <div class="mt-3 grid space-y-3">
             <p><a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/categories">Categories</a></p>
             <p><a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/products">All Products</a></p>
@@ -17,22 +17,22 @@
           </div>
         </div>
         <!-- End Col -->
-
+  
         <div class="col-span-1">
           <h4 class="font-semibold text-gray-100">Company</h4>
-
+  
           <div class="mt-3 grid space-y-3">
             <p><a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">About us</a></p>
             <p><a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">Blog</a></p>
-
+  
             <p><a class="inline-flex gap-x-2 text-gray-400 hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">Customers</a></p>
           </div>
         </div>
         <!-- End Col -->
-
+  
         <div class="col-span-2">
           <h4 class="font-semibold text-gray-100">Stay up to date</h4>
-
+  
           <form>
             <div class="mt-4 flex flex-col items-center gap-2 sm:flex-row sm:gap-3 bg-white rounded-lg p-2 dark:bg-gray-800">
               <div class="w-full">
@@ -42,19 +42,19 @@
                 Subscribe
               </a>
             </div>
-
+  
           </form>
         </div>
         <!-- End Col -->
       </div>
       <!-- End Grid -->
-
+  
       <div class="mt-5 sm:mt-12 grid gap-y-2 sm:gap-y-0 sm:flex sm:justify-between sm:items-center">
         <div class="flex justify-between items-center">
-          <p class="text-sm text-gray-400">© 2024 FitZone. All rights reserved.</p>
+          <p class="text-sm text-gray-400">© 2024 DCodeMania. All rights reserved.</p>
         </div>
         <!-- End Col -->
-
+  
         <!-- Social Brands -->
         <div>
           <a class="w-10 h-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-white/10 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:ring-1 focus:ring-gray-600" href="#">
@@ -77,7 +77,7 @@
               <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
             </svg>
           </a>
-
+  
         </div>
         <!-- End Social Brands -->
       </div>

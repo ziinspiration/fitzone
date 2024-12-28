@@ -3,12 +3,12 @@
         <div class="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
             <div class="flex flex-wrap -mx-4">
                 <div class="w-full mb-8 md:w-1/2 md:mb-0" x-data="{ mainImage: '{{ isset($product->images[0]) ? url('storage', $product->images[0]) : url('images/default-product.jpg') }}' }">
-                    <div class="sticky top-0 z-40 overflow-hidden">
+                    <div class="sticky top-0 z-50 overflow-hidden">
                         <div class="relative mb-6 lg:mb-10 lg:h-2/4">
                             <img x-bind:src="mainImage" alt="{{ $product->name }}"
                                 class="object-cover w-full lg:h-full">
                         </div>
-                        <div class="flex-wrap hidden md:flex z-10">
+                        <div class="flex-wrap hidden md:flex">
                             @forelse ($product->images as $image)
                                 <div class="w-1/2 p-2 sm:w-1/4" x-on:click="mainImage='{{ url('storage', $image) }}'">
                                     <img src="{{ url('storage', $image) }}" alt="{{ $product->name }}"
