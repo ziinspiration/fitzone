@@ -2,46 +2,52 @@
 
 namespace App\Models;
 
-use Filament\Models\Contracts\HasName;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Notifications\Notifiable;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements HasName
+class User extends Authenticatable implements FilamentUser
 {
-    protected $appends = ['full_name'];
-
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'name',
         'email',
+        'email_verified_at',
         'password',
-        'verification_code',
-        'is_verified',
-        'avatar',
-        'role_id',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    public function addresses()
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return $this->hasMany(Address::class);
-    }
-
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 
     public function orders()
@@ -49,13 +55,10 @@ class User extends Authenticatable implements HasName
         return $this->hasMany(Order::class);
     }
 
-    public function getFullNameAttribute(): string
-    {
-        return $this->first_name . ' ' . $this->last_name;
-    }
 
-    public function getFilamentName(): string
+    // setting default admin
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->full_name;
+        return $this->email == 'tes1@gmail.com';
     }
 }
