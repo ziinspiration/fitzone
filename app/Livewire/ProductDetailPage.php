@@ -14,7 +14,6 @@ use Jantinnerezo\LivewireAlert\LivewireAlert;
 class ProductDetailPage extends Component
 {
     use LivewireAlert;
-
     public $slug;
     public $quantity = 1;
     public function mount($slug)
@@ -36,7 +35,7 @@ class ProductDetailPage extends Component
 
     public function addToCart($product_id)
     {
-        $total_count = CartManagement::addItemToCartWithQty($product_id, $this->quantity);
+        $total_count = CartManagement::addItemToCart($product_id);
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
         $this->alert('success', 'Success added to cart successfuly!', [
             'position' => 'bottom-end',
