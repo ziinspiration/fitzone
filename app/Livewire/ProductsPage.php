@@ -13,7 +13,6 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use App\Helpers\CartManagement;
 
-
 #[Title('Product - FitZone')]
 class ProductsPage extends Component
 {
@@ -65,10 +64,6 @@ class ProductsPage extends Component
 
         if ($this->on_sale) {
             $productQuery->where('on_sale', 1);
-        }
-
-        if ($this->price_range) {
-            $productQuery->whereBetween('price', [0, $this->price_range]);
         }
 
         return view('livewire.products-page', [
