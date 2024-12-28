@@ -1,5 +1,4 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
@@ -13,14 +12,8 @@
         "php": "^8.2",
         "laravel/framework": "^11.9",
         "filament/filament": "^3.0",
-        "illuminate/console": "^11.0",
-        "nunomaduro/termwind": "^2.0",
-        "anhskohbo/no-captcha": "*",
-        "google/recaptcha": "^1.3",
-        "jantinnerezo/livewire-alert": "^3.0",
-        "laravel/socialite": "^5.16",
-        "pestphp/pest-plugin-arch": "*",
-        "phpmailer/phpmailer": "^6.9"
+        "illuminate/console": "^10.17.0",
+        "nunomaduro/termwind": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -29,8 +22,8 @@
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
-        "pestphp/pest": "^3.7",
-        "phpunit/phpunit": "^11.0.1"
+        "pestphp/pest": "^3.4",
+        "pestphp/pest-plugin-laravel": "^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -47,7 +40,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -62,7 +56,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail\" \"npm run dev\" --names=server,queue,logs,vite"
         ]
     },
     "extra": {
@@ -78,7 +72,5 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    }
 }
