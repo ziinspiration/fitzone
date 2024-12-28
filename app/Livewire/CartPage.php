@@ -17,21 +17,23 @@ class CartPage extends Component
         $this->cart_items = CartManagement::getCartItemsFromCookie();
         $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
     }
-
-    public function removeItem($product_id){
-        $this->cart_items=CartManagement::removeCartItem($product_id);
-        $this->grand_total=CartManagement::calculateGrandTotal($this->cart_items);
-        $this->dispatch('update-cart-count',total_count:count($this->cart_items))->to(Navbar::class);
+    public function removeItem($product_id)
+    {
+        $this->cart_items = CartManagement::removeCartItem($product_id);
+        $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
+        $this->dispatch('update-cart-count', total_count: count($this->cart_items))->to(Navbar::class);
     }
 
-    public function increaseQty($product_id){
-        $this->cart_items=CartManagement::increamentQuantityToCartItem($product_id);
-        $this->grand_total=CartManagement::calculateGrandTotal($this->cart_items);
+    public function increaseQty($product_id)
+    {
+        $this->cart_items = CartManagement::increamentQuantityToCartItem($product_id);
+        $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
     }
 
-    public function decreaseQty($product_id){
-        $this->cart_items=CartManagement::decrementQuantityToCartItem($product_id);
-        $this->grand_total=CartManagement::calculateGrandTotal($this->cart_items);
+    public function decreaseQty($product_id)
+    {
+        $this->cart_items = CartManagement::decrementQuantityToCartItem($product_id);
+        $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
     }
 
     public function render()
