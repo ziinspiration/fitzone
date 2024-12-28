@@ -9,12 +9,9 @@ use Livewire\Component;
 class Navbar extends Component
 {
     public $total_count = 0;
-
-    protected $listeners = ['update-cart-count' => 'updateCartCount']; // Pendengar event
-
     public function mount()
     {
-        $this->total_count = count(CartManagement::getCartItemsFromCookie() ?? []);
+        $this->total_count = count(CartManagement::getCartItemsFromCookie());
     }
 
     #[On('update-cart-count')]
