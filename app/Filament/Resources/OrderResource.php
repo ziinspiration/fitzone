@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
 
+
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -256,7 +257,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            AddressRelationManager::class
+            //
         ];
     }
 
