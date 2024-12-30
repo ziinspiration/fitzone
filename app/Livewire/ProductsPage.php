@@ -72,6 +72,4 @@ class ProductsPage extends Component
             'categories' => Category::where('is_active', 1)->get(['id', 'name', 'slug']),
         ]);
     }
-
-
 }

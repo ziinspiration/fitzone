@@ -3,87 +3,58 @@
 namespace App\Livewire\Auth;
 
 use Livewire\Component;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Url;
 use Livewire\Attributes\Title;
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
 
-#[Title('Reset Password - Fitzone')]
-
+#[Title('Reset Password')]
 class ResetPasswordPage extends Component
 {
     public $token;
+    #[Url]
     public $email;
     public $password;
     public $password_confirmation;
 
-    public function mount(Request $request)
+    public function mount($token)
     {
-        $this->token = $request->query('token');
-        $this->email = $request->query('email');
+        $this->token = $token;
+    }
 
-        $tokenData = DB::table('password_reset_tokens')
-            ->where('email', $this->email)
-            ->where('token', $this->token)
-            ->first();
+    public function save()
+    {
+        $this->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed'
+        ]);
 
-        if (!$tokenData) {
-            session()->flash('error', 'Invalid or expired reset token.');
-            return redirect()->route('forgot-password');
-        }
+        $status = Password::reset(
+            [
+                'email' => $this->email,
+                'password' => $this->password,
+                'password_confirmation' => $this->password_confirmation,
+                'token' => $this->token
+            ],
+            function (User $user, string $password) {
+                $password = $this->password;
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+                $user->save();
+                event(new PasswordReset($user));
+            }
+        );
 
-        $tokenCreatedAt = Carbon::parse($tokenData->created_at);
-        if ($tokenCreatedAt->diffInHours(now()) > 1) {
-            DB::table('password_reset_tokens')
-                ->where('email', $this->email)
-                ->delete();
-
-            session()->flash('error', 'Reset token has expired. Please request a new reset link.');
-            return redirect()->route('forgot-password');
-        }
+        return $status === Password::PASSWORD_RESET ? redirect('/login') : session()->flash('error', 'Something went wrong');
     }
 
     public function render()
     {
         return view('livewire.auth.reset-password-page');
-    }
-
-    public function updatePassword()
-    {
-        $this->validate([
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|confirmed|min:8'
-        ], [
-            'password.min' => 'Password must be at least 8 characters long.',
-            'password.confirmed' => 'Password confirmation does not match.'
-        ]);
-
-        $user = User::where('email', $this->email)->first();
-
-        if (!$user) {
-            session()->flash('error', 'Account not found.');
-            return back();
-        }
-
-        $tokenData = DB::table('password_reset_tokens')
-            ->where('email', $this->email)
-            ->where('token', $this->token)
-            ->first();
-
-        if (!$tokenData) {
-            session()->flash('error', 'Invalid or expired token.');
-            return redirect()->route('forgot-password');
-        }
-
-        $user->password = Hash::make($this->password);
-        $user->save();
-
-        DB::table('password_reset_tokens')
-            ->where('email', $this->email)
-            ->delete();
-
-        return redirect()->route('login')->with('status', 'Your password has been successfully updated. Please login with your new password.');
     }
 }
