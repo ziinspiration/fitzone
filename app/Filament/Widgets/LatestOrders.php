@@ -32,7 +32,6 @@ class LatestOrders extends BaseWidget
 
                 TextColumn::make('grand_total')
                     ->money('IDR'),
-
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
@@ -50,16 +49,13 @@ class LatestOrders extends BaseWidget
                         'cancelled' => 'heroicon-m-x-circle',
                     })
                     ->sortable(),
-
                 TextColumn::make('payment_method')
                     ->sortable()
                     ->searchable(),
-
                 TextColumn::make('payment_status')
                     ->sortable()
                     ->badge()
                     ->searchable(),
-                    
                 TextColumn::make('created_at')
                     ->label('Order Date')
                     ->dateTime(),
