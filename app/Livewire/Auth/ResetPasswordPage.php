@@ -2,44 +2,59 @@
 
 namespace App\Livewire\Auth;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Url;
 use Livewire\Attributes\Title;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
 
-#[Title('Register')]
-class RegisterPage extends Component
+#[Title('Reset Password')]
+class ResetPasswordPage extends Component
 {
-    public $name;
+    public $token;
+    #[Url]
     public $email;
     public $password;
+    public $password_confirmation;
 
-    // Register user
+    public function mount($token)
+    {
+        $this->token = $token;
+    }
+
     public function save()
     {
         $this->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users|max:255',
-            'password' => 'required|min:6|max:255',
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed'
         ]);
 
-        // Save to database
-        $user = User::create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => Hash::make($this->password),
-        ]);
+        $status = Password::reset(
+            [
+                'email' => $this->email,
+                'password' => $this->password,
+                'password_confirmation' => $this->password_confirmation,
+                'token' => $this->token
+            ],
+            function (User $user, string $password) {
+                $password = $this->password;
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+                $user->save();
+                event(new PasswordReset($user));
+            }
+        );
 
-        // Login user
-        auth()->login($user);
-
-        // Redirect to home page
-        return redirect()->intended('/');
+        return $status === Password::PASSWORD_RESET ? redirect('/login') : session()->flash('error', 'Something went wrong');
     }
 
     public function render()
     {
-        return view('livewire.auth.register-page');
+        return view('livewire.auth.reset-password-page');
     }
 }
