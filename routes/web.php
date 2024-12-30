@@ -24,7 +24,6 @@ Route::get('/cart', CartPage::class);
 Route::get('/products/{slug}', ProductDetailPage::class);
 
 
-// backend afat
 Route::middleware('guest')->group(function () {
     Route::get('/login', LoginPage::class)->name('login');
     Route::get('/register', RegisterPage::class);
@@ -34,10 +33,11 @@ Route::middleware('guest')->group(function () {
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/logout', function () {
+    Route::post('/logout', function () {
         auth()->logout();
         return redirect()->to('/');
-    });
+    })->name('logout');
+
     Route::get('/checkout', CheckoutPage::class);
     Route::get('/my-orders', MyOrdersPage::class);
     Route::get('/my-orders/{order}', MyOrderDetailPage::class)->name('my-orders.show');
