@@ -2,38 +2,37 @@
 
 namespace App\Livewire;
 
-use App\Livewire\Partials\Navbar;
-use App\Models\Brand;
 use App\Models\Product;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
-use App\Models\Category;
-use Livewire\Attributes\Url;
-use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use App\Helpers\CartManagement;
+use App\Livewire\Partials\Navbar;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 
-#[Title('Product - FitZone')]
-class ProductsPage extends Component
+
+#[Title('Product Detail - FitZone')]
+class ProductDetailPage extends Component
 {
     use LivewireAlert;
-    use WithPagination;
+    public $slug;
+    public $quantity = 1;
+    public function mount($slug)
+    {
+        $this->slug = $slug;
+    }
 
-    #[Url]
-    public $selected_categories = [];
+    public function render()
+    {
+        return view('livewire.product-detail-page', [
+            'product' => Product::where('slug', $this->slug)->firstOrFail(),
+        ]);
+    }
 
-    #[Url]
-    public $selected_brands = [];
+    public function increaseQty()
+    {
+        $this->quantity++;
+    }
 
-    #[Url]
-    public $featured = [];
-
-    #[Url]
-    public $on_sale = [];
-
-    public $price_range = 5000;
-
-    //add product to cart method
     public function addToCart($product_id)
     {
         $total_count = CartManagement::addItemToCart($product_id);
@@ -45,31 +44,10 @@ class ProductsPage extends Component
         ]);
     }
 
-
-    public function render()
+    public function decreaseQty()
     {
-        $productQuery = Product::query()->where('is_active', 1);
-
-        if (!empty($this->selected_categories)) {
-            $productQuery->whereIn('category_id', $this->selected_categories);
+        if ($this->quantity > 1) {
+            $this->quantity--;
         }
-
-        if (!empty($this->selected_brands)) {
-            $productQuery->whereIn('brand_id', $this->selected_brands);
-        }
-
-        if ($this->featured) {
-            $productQuery->where('is_featured', 1);
-        }
-
-        if ($this->on_sale) {
-            $productQuery->where('on_sale', 1);
-        }
-
-        return view('livewire.products-page', [
-            'products' => $productQuery->paginate(9),
-            'brands' => Brand::where('is_active', 1)->get(['id', 'name', 'slug']),
-            'categories' => Category::where('is_active', 1)->get(['id', 'name', 'slug']),
-        ]);
     }
 }
