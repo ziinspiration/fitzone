@@ -47,3 +47,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-account', MyAccountPage::class)->name('account');
 });
 
+
+// Route::get('/my-account', MyAccountPage::class)->middleware(['auth'])->name('account');
