@@ -36,7 +36,7 @@ class ProductsPage extends Component
     //add product to cart method
     public function addToCart($product_id)
     {
-        $total_count = CartManagement::addItemToCart($product_id);
+        $total_count = CartManagement::addItemToCartWithQty($product_id, 1);
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
         $this->alert('success', 'Success added to cart successfuly!', [
             'position' => 'bottom-end',
@@ -72,6 +72,4 @@ class ProductsPage extends Component
             'categories' => Category::where('is_active', 1)->get(['id', 'name', 'slug']),
         ]);
     }
-
-
 }

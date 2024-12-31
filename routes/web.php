@@ -7,6 +7,7 @@ use App\Livewire\SuccessPage;
 use App\Livewire\CheckoutPage;
 use App\Livewire\MyOrdersPage;
 use App\Livewire\ProductsPage;
+use App\Livewire\MyAccountPage;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\CategoriesPage;
 use App\Livewire\Auth\RegisterPage;
@@ -24,7 +25,6 @@ Route::get('/cart', CartPage::class);
 Route::get('/products/{slug}', ProductDetailPage::class);
 
 
-// backend afat
 Route::middleware('guest')->group(function () {
     Route::get('/login', LoginPage::class)->name('login');
     Route::get('/register', RegisterPage::class);
@@ -34,13 +34,15 @@ Route::middleware('guest')->group(function () {
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/logout', function () {
+    Route::post('/logout', function () {
         auth()->logout();
         return redirect()->to('/');
-    });
+    })->name('logout');
+
     Route::get('/checkout', CheckoutPage::class);
     Route::get('/my-orders', MyOrdersPage::class);
-    Route::get('/my-orders/{order}', MyOrderDetailPage::class)->name('my-orders.show');
+    Route::get('/my-orders/{order_id}', MyOrderDetailPage::class)->name('my-orders.show');
     Route::get('/success', SuccessPage::class)->name('success');
     Route::get('/cancel', CancelPage::class)->name('cancel');
+    Route::get('/my-account', MyAccountPage::class)->name('account');
 });

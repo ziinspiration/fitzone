@@ -17,7 +17,6 @@ class CartPage extends Component
         $this->cart_items = CartManagement::getCartItemsFromCookie();
         $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
     }
-
     public function removeItem($product_id)
     {
         $this->cart_items = CartManagement::removeCartItem($product_id);
