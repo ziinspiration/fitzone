@@ -46,3 +46,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/cancel', CancelPage::class)->name('cancel');
     Route::get('/my-account', MyAccountPage::class)->name('account');
 });
+
