@@ -2,15 +2,18 @@
 
 namespace App\Livewire;
 
-use App\Helpers\CartManagement;
-use App\Mail\OrderPlaced;
-use App\Models\Address;
 use App\Models\Order;
-use App\Services\MidtransService;
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Support\Facades\Mail;
-use Livewire\Attributes\Title;
+use App\Models\Address;
 use Livewire\Component;
+use App\Mail\OrderPlaced;
+use Livewire\Attributes\Title;
+use App\Helpers\CartManagement;
+use App\Services\MidtransService;
+use Illuminate\Support\Facades\Auth; // Tambahkan ini
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Stripe\Stripe; // Tambahkan ini
+use Illuminate\Support\Facades\Redirect;
 
 #[Title('Checkout')]
 class CheckoutPage extends Component
@@ -26,9 +29,14 @@ class CheckoutPage extends Component
 
     public function mount()
     {
+        // Cek authentication
+        if (!Auth::check()) {
+            return Redirect::to('/login');
+        }
+
         $cart_items = CartManagement::getCartItemsFromCookie();
         if (count($cart_items) == 0) {
-            return redirect('/products');
+            return Redirect::to('/products');
         }
     }
 
@@ -64,8 +72,9 @@ class CheckoutPage extends Component
             ];
         }
 
+        // Ganti auth()->user() menjadi Auth::user()
         $order = new Order();
-        $order->user_id = auth()->user()->id;
+        $order->user_id = Auth::user()->id;
         $order->grand_total = CartManagement::calculateGrandTotal($cart_items);
         $order->payment_method = $this->payment_method;
         $order->payment_status = 'pending';
@@ -73,7 +82,7 @@ class CheckoutPage extends Component
         $order->currency = 'idr';
         $order->shipping_amount = 0;
         $order->shipping_method = 'none';
-        $order->notes = 'Order placed by ' . auth()->user()->name;
+        $order->notes = 'Order placed by ' . Auth::user()->name;
 
         $address = new Address();
         $address->first_name = $this->first_name;
@@ -87,10 +96,10 @@ class CheckoutPage extends Component
         $redirect_url = '';
 
         if ($this->payment_method == 'stripe') {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
+            // Stripe::setApiKey(env('STRIPE_SECRET'));
             $sessionCheckout = Session::create([
                 'payment_method_types' => ['card'],
-                'customer_email' => auth()->user()->email,
+                'customer_email' => Auth::user()->email,
                 'line_items' => $line_items,
                 'mode' => 'payment',
                 'success_url' => route('success') . '?session_id={CHECKOUT_SESSION_ID}',

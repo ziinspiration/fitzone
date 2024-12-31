@@ -17,6 +17,7 @@
         "laravel/framework": "^11.9",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
+        "livewire/livewire": "^3.5",
         "nunomaduro/termwind": "^2.0",
         "pestphp/pest-plugin-arch": "*",
         "phpmailer/phpmailer": "^6.9"
@@ -62,7 +63,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php -S 127.0.0.1:9000 -t public/\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names=server,queue,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php -S 127.0.0.1:8000 -t public/\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names=server,queue,vite"
         ]
     },
     "extra": {

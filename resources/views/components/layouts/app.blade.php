@@ -7,8 +7,7 @@
 
     <title>{{ $title ?? 'Fitzone' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles()
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+    @livewireStyles
 </head>
 
 <body class="bg-slate-200 dark:bg-slate-700">
@@ -18,7 +17,7 @@
     </main>
 
     @livewire('partials.footer')
-    @livewireScripts()
+    @livewireScripts
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <x-livewire-alert::scripts />
     @stack('scripts')
