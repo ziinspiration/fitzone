@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\Cookie;
 class CartManagement
 {
 
-    // add item to cart
-    static public function addItemToCart($product_id)
+    // Menambahkan item ke keranjang dengan jumlah yang ditentukan
+    static public function addItemToCartWithQty($product_id, $quantity)
     {
+        // Ambil daftar item yang ada di dalam cookie
         $cart_items = self::getCartItemsFromCookie();
 
+        // Cek apakah item sudah ada dalam keranjang
         $existing_item = null;
-
         foreach ($cart_items as $key => $item) {
             if ($item['product_id'] == $product_id) {
                 $existing_item = $key;
@@ -23,24 +24,29 @@ class CartManagement
         }
 
         if ($existing_item !== null) {
-            $cart_items[$existing_item]['quantity']++;
+            // Jika item sudah ada, tambahkan jumlahnya dengan jumlah yang ditentukan
+            $cart_items[$existing_item]['quantity'] += $quantity;
             $cart_items[$existing_item]['total_amount'] = $cart_items[$existing_item]['quantity'] *
                 $cart_items[$existing_item]['unit_amount'];
         } else {
+            // Jika item belum ada, tambahkan item baru dengan jumlah yang ditentukan
             $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
             if ($product) {
                 $cart_items[] = [
                     'product_id' => $product_id,
                     'name' => $product->name,
                     'image' => $product->images[0],
-                    'quantity' => 1,
+                    'quantity' => $quantity,
                     'unit_amount' => $product->price,
-                    'total_amount' => $product->price
+                    'total_amount' => $product->price * $quantity
                 ];
             }
         }
 
+        // Simpan kembali item keranjang ke dalam cookie
         self::addCartItemsToCookie($cart_items);
+
+        // Kembalikan jumlah total item dalam keranjang
         return count($cart_items);
     }
 

@@ -19,6 +19,7 @@ class ResetPasswordPage extends Component
     public $email;
     public $password;
     public $password_confirmation;
+    public $error;
 
     public function mount($token)
     {
