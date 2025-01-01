@@ -2,16 +2,18 @@
 
 namespace App\Livewire;
 
-use App\Helpers\CartManagement;
-use App\Services\RajaOngkirService;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Address;
 use Livewire\Component;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use App\Models\OrderItem;
 use Livewire\Attributes\Title;
+use App\Helpers\CartManagement;
+use App\Services\MidtransService;
+use Illuminate\Support\Facades\DB;
+use App\Services\RajaOngkirService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+
 
 #[Title('Checkout - Fitzone')]
 class CheckoutPage extends Component
@@ -35,7 +37,7 @@ class CheckoutPage extends Component
     public $subtotal = 0;
     public $tax_amount = 0;
     public $grand_total = 0;
-
+    public $snap_token;
     protected $rules = [
         'first_name' => 'required|min:3',
         'last_name' => 'required|min:3',
@@ -270,7 +272,6 @@ class CheckoutPage extends Component
                 'status' => 'Pending'
             ]);
 
-
             foreach ($this->cart_items as $item) {
                 $total_price = $item['quantity'] * $item['product']['price'];
                 OrderItem::create([
@@ -282,18 +283,18 @@ class CheckoutPage extends Component
                 ]);
             }
 
+            $midtrans = new MidtransService();
+            $snapToken = $midtrans->createTransaction($order);
+
+            $this->snap_token = (string) $snapToken;
+
             DB::commit();
-            session()->flash('success', 'Order has been successfully processed');
-            return redirect()->route('my-orders');
+
+            $this->dispatch('showPaymentPopup', snapToken: $this->snap_token);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Order Creation Error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-            session()->flash('error', 'Failed to create order. Please try again.');
-            $this->resetErrorBag();
+            Log::error('Order Creation Error: ' . $e->getMessage());
+            session()->flash('error', 'Gagal membuat order. Silakan coba lagi.');
             throw $e;
         }
     }

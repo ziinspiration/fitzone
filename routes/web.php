@@ -14,6 +14,7 @@ use App\Livewire\Auth\RegisterPage;
 use App\Livewire\Auth\OtpVerify;
 use App\Livewire\MyOrderDetailPage;
 use App\Livewire\ProductDetailPage;
+use App\Livewire\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\Payment\PaymentSuccess;
@@ -41,6 +42,13 @@ Route::middleware('auth')->group(function () {
         return redirect()->to('/');
     })->name('logout');
 
+    Route::get('/test-midtrans', function () {
+        dd([
+            'server_key' => config('midtrans.server_key'),
+            'client_key' => config('midtrans.client_key'),
+            'is_production' => config('midtrans.is_production'),
+        ]);
+    });
 
     Route::get('/checkout', CheckoutPage::class)->name('checkout.page');
     Route::get('/my-orders', MyOrdersPage::class)->name('my-orders');

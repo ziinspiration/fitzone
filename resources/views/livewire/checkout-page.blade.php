@@ -193,3 +193,43 @@
         </div>
     </form>
 </div>
+@push('scripts')
+<script src="https://app.sandbox.midtrans.com/snap/snap.js"
+data-client-key="{{ config('midtrans.client_key') }}">
+</script>
+    <script>
+        window.addEventListener('showPaymentPopup', (event) => {
+
+            let token = event.detail.snapToken.toString();
+
+            console.log('Snap Token:', token);
+
+            try {
+                window.snap.pay(token, {
+                    onSuccess: function(result) {
+                        console.log('success');
+                        console.log(result);
+                        window.location.href = '/success';
+                    },
+                    onPending: function(result) {
+                        console.log('pending');
+                        console.log(result);
+                        window.location.href = '/pending';
+                    },
+                    onError: function(result) {
+                        console.log('error');
+                        console.log(result);
+                        window.location.href = '/error';
+                    },
+                    onClose: function() {
+                        document.getElementById('submit-button').disabled = false;
+                        alert('Anda menutup popup tanpa menyelesaikan pembayaran');
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing payment:', error);
+                alert('Terjadi kesalahan saat memulai pembayaran');
+            }
+        });
+    </script>
+@endpush
