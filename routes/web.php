@@ -27,7 +27,7 @@ Route::get('/products/{slug}', ProductDetailPage::class);
 
 
 Route::middleware('guest')->group(function () {
-    Route::get('/login', LoginPage::class)->name('login');
+    Route::get('/signin', LoginPage::class);
     Route::get('/signup', RegisterPage::class);
     Route::get('/forgot', ForgotPasswordPage::class)->name('password.request');
     Route::get('/reset/{token}', ResetPasswordPage::class)->name('password.reset');
@@ -48,6 +48,3 @@ Route::middleware('auth')->group(function () {
     Route::get('/cancel', CancelPage::class)->name('cancel');
     Route::get('/my-account', MyAccountPage::class)->name('account');
 });
-
-
-// Route::get('/my-account', MyAccountPage::class)->middleware(['auth'])->name('account');

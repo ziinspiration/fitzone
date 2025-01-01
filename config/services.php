@@ -33,6 +33,29 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+
+        'google' => [
+            'client_id' => env('GOOGLE_CLIENT_ID'),
+            'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+            'redirect' => env('GOOGLE_REDIRECT_URI'),
+            'scopes' => ['openid', 'profile', 'email'],
+        ],
+
+        'recaptha' => [
+            'site_key' => env('RECAPTCHA_SITE_KEY'),
+            'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+        ],
+
+        'midtrans' => [
+            'client_key' => env('MIDTRANS_CLIENT_KEY'),
+            'server_key' => env('MIDTRANS_SERVER_KEY'),
+            'is_production' => env('MIDTRANS_IS_PRODUCTION', false),
+        ],
+
+        'rajaongkir' => [
+            'key' => env('RAJAONGKIR_API_KEY'),
+            'base_url' => env('RAJAONGKIR_BASE_URL', 'https://api.rajaongkir.com/starter/'),
+        ],
     ],
 
 ];
