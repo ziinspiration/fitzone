@@ -18,8 +18,8 @@
                             <div class="space-y-3">
                                 @foreach ($categories as $category)
                                     <label class="flex items-center gap-3" wire:key="{{ $category->id }}">
-                                        <input type="checkbox" wire:model.live="selected_categories" 
-                                            value="{{ $category->id }}" 
+                                        <input type="checkbox" wire:model.live="selected_categories"
+                                            value="{{ $category->id }}"
                                             class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                         <span class="text-sm text-gray-600 dark:text-gray-400">{{ $category->name }}</span>
                                     </label>
@@ -38,8 +38,8 @@
                             <div class="space-y-3">
                                 @foreach ($brands as $brand)
                                     <label class="flex items-center gap-3" wire:key="{{ $brand->id }}">
-                                        <input type="checkbox" wire:model.live="selected_brands" 
-                                            value="{{ $brand->id }}" 
+                                        <input type="checkbox" wire:model.live="selected_brands"
+                                            value="{{ $brand->id }}"
                                             class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                         <span class="text-sm text-gray-600 dark:text-gray-400">{{ $brand->name }}</span>
                                     </label>
@@ -57,12 +57,12 @@
                             </div>
                             <div class="space-y-3">
                                 <label class="flex items-center gap-3">
-                                    <input type="checkbox" wire:model.live="featured" value="1" 
+                                    <input type="checkbox" wire:model.live="featured" value="1"
                                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                     <span class="text-sm text-gray-600 dark:text-gray-400">Featured Products</span>
                                 </label>
                                 <label class="flex items-center gap-3">
-                                    <input type="checkbox" wire:model.live="on_sale" value="1" 
+                                    <input type="checkbox" wire:model.live="on_sale" value="1"
                                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                     <span class="text-sm text-gray-600 dark:text-gray-400">On Sale</span>
                                 </label>
@@ -97,7 +97,7 @@
                         <span class="text-sm text-gray-500 dark:text-gray-400">
                             Showing {{ $products->count() }} products
                         </span>
-                        <select wire:model.live="sort" 
+                        <select wire:model.live="sort"
                             class="rounded-lg border-0 bg-white px-4 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-200">
                             <option value="latest">Sort by latest</option>
                             <option value="price_low">Price: Low to High</option>
@@ -116,7 +116,7 @@
                                         <img src="{{ !empty($product->images) ? url('storage', $product->images[0]) : url('path/to/default/image.jpg') }}"
                                             alt="{{ $product->name }}"
                                             class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
-                                        
+
                                         {{-- Badges --}}
                                         @if($product->featured)
                                             <span class="absolute left-2 top-2 rounded-full bg-indigo-600 px-2 py-1 text-xs text-white">
@@ -131,18 +131,18 @@
 
                                         {{-- Quick Actions --}}
                                         <div class="absolute inset-0 flex items-center justify-center gap-3 bg-black/40 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
-                                            <a href="/products/{{ $product->slug }}" 
+                                            <a href="/products/{{ $product->slug }}"
                                                 class="rounded-full bg-white p-2 text-gray-900 transition-transform hover:scale-110 dark:bg-gray-800 dark:text-white">
                                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                             </a>
                                             <button class="rounded-full bg-white p-2 text-gray-900 transition-transform hover:scale-110 dark:bg-gray-800 dark:text-white">
                                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                                 </svg>
                                             </button>
@@ -158,22 +158,26 @@
                                             {{ Number::currency($product->price, 'IDR') }}
                                         </div>
                                         <button wire:click="addToCart({{ $product->id }})"
+                                            @if (!auth()->check())
+                                                wire:click.prevent="redirectToLogin"
+                                                disabled
+                                            @endif
                                             class="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600">
-                                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                                            </svg>
-                                            <span wire:loading.remove wire:target="addToCart({{ $product->id }})">
-                                                Add to Cart
-                                            </span>
-                                            <span wire:loading wire:target="addToCart({{ $product->id }})">
-                                                Adding...
-                                            </span>
-                                        </button>
+                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                        </svg>
+                                        <span wire:loading.remove wire:target="addToCart({{ $product->id }})">
+                                            Add to Cart
+                                        </span>
+                                        <span wire:loading wire:target="addToCart({{ $product->id }})">
+                                            Adding...
+                                        </span>
+                                    </button>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach 
+                        @endforeach
                     </div>
 
 

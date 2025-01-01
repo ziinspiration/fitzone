@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\RelationManagers\OrdersRelationManager;
 use Filament\Forms;
 use App\Models\User;
+use App\Models\Role;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
@@ -23,32 +24,36 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'full_name';
     protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('first_name')
+                    ->required(),
+
+                Forms\Components\TextInput::make('last_name')
                     ->required(),
 
                 Forms\Components\TextInput::make('email')
-                    ->label('Email Addres')
+                    ->label('Email Address')
                     ->email()
                     ->maxlength(255)
                     ->unique(ignoreRecord: true)
                     ->required(),
 
-                Forms\Components\DateTimePicker::make('email_verified_at')
-                    ->label('Email Verified At')
-                    ->default(now()),
+                Forms\Components\Select::make('role_id')
+                    ->label('Role Account')
+                    ->options(Role::all()->pluck('name', 'id'))
+                    ->required()
+                    ->searchable()
+                    ->default(null),
 
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->revealable()
-
-
+                    ->revealable(),
             ]);
     }
 
@@ -56,39 +61,28 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('first_name')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('last_name')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('role.name')
+                    ->label('Role')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([/* Add filters if needed */])
             ->actions([
-
-                // Fungsi Untuk menggabungkan button
-
-                // Tables\Actions\ActionGroup::make([
-                //     Tables\Actions\EditAction::make(),
-                //     Tables\Actions\DeleteAction::make(),
-                //     Tables\Actions\ViewAction::make(),
-                // ])
-
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ViewAction::make(),
-
-
-
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -106,7 +100,7 @@ class UserResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'email'];
+        return ['full_name', 'email'];
     }
 
     public static function getPages(): array
