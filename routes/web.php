@@ -11,6 +11,7 @@ use App\Livewire\MyAccountPage;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\CategoriesPage;
 use App\Livewire\Auth\RegisterPage;
+use App\Livewire\Auth\OtpVerify;
 use App\Livewire\MyOrderDetailPage;
 use App\Livewire\ProductDetailPage;
 use Illuminate\Support\Facades\Route;
@@ -27,9 +28,10 @@ Route::get('/products/{slug}', ProductDetailPage::class);
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', LoginPage::class)->name('login');
-    Route::get('/register', RegisterPage::class);
+    Route::get('/signup', RegisterPage::class);
     Route::get('/forgot', ForgotPasswordPage::class)->name('password.request');
     Route::get('/reset/{token}', ResetPasswordPage::class)->name('password.reset');
+    Route::get('/verification', OtpVerify::class)->name('verification');
 });
 
 

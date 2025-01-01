@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\OrderItem;
+use App\Models\CartItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -43,5 +44,10 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
     }
 }

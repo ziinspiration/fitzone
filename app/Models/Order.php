@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Address;
 use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -13,25 +14,33 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'grand_total',
-        'payment_method',
-        'payment_status',
+        'address_id',
+        'order_number',
+        'subtotal',
+        'tax_amount',
+        'shipping_cost',
+        'total_amount',
+        'shipping_service',
         'status',
-        'currency',
-        'shipping_amount',
-        'shipping_method',
-        'notes'
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function items(){
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+    public function orderItems()
+    {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function address(){
-        return $this->hasOne(Address::class);
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id', 'id');
     }
 }
