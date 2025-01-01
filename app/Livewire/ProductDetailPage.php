@@ -10,7 +10,7 @@ use App\Livewire\Partials\Navbar;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 
-#[Title('Product Detail - FitZone')]
+#[Title('Product Detail - Fitzone')]
 class ProductDetailPage extends Component
 {
     use LivewireAlert;
@@ -35,9 +35,20 @@ class ProductDetailPage extends Component
 
     public function addToCart($product_id)
     {
-        $total_count = CartManagement::addItemToCartWithQty($product_id, $this->quantity);
+        if ($this->quantity <= 0) {
+            $this->alert('error', 'Quantity must be greater than zero!', [
+                'position' => 'bottom-end',
+                'timer' => 3000,
+                'toast' => 'true',
+            ]);
+            return;
+        }
+
+        $total_count = CartManagement::addItemToCart($product_id, $this->quantity);
+
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
-        $this->alert('success', 'Success added to cart successfuly!', [
+
+        $this->alert('success', 'Successfully added to cart!', [
             'position' => 'bottom-end',
             'timer' => 3000,
             'toast' => 'true',

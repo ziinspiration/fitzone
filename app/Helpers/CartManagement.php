@@ -2,132 +2,204 @@
 
 namespace App\Helpers;
 
+use App\Models\Cart;
 use App\Models\Product;
-use Illuminate\Support\Facades\Cookie;
+use App\Models\CartItem;
+use Livewire\Attributes\Session;
+use Illuminate\Support\Facades\Auth;
 
 class CartManagement
 {
-
-    // Menambahkan item ke keranjang dengan jumlah yang ditentukan
-    static public function addItemToCartWithQty($product_id, $quantity)
+    public static function addItemToCart($product_id, $quantity)
     {
-        // Ambil daftar item yang ada di dalam cookie
-        $cart_items = self::getCartItemsFromCookie();
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        $existing_item = $cart->items()->where('product_id', $product_id)->first();
 
-        // Cek apakah item sudah ada dalam keranjang
-        $existing_item = null;
-        foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
-                $existing_item = $key;
-                break;
-            }
-        }
-
-        if ($existing_item !== null) {
-            // Jika item sudah ada, tambahkan jumlahnya dengan jumlah yang ditentukan
-            $cart_items[$existing_item]['quantity'] += $quantity;
-            $cart_items[$existing_item]['total_amount'] = $cart_items[$existing_item]['quantity'] *
-                $cart_items[$existing_item]['unit_amount'];
+        if ($existing_item) {
+            $existing_item->quantity += $quantity;
+            $existing_item->total_price = $existing_item->quantity * $existing_item->unit_price;
+            $existing_item->save();
         } else {
-            // Jika item belum ada, tambahkan item baru dengan jumlah yang ditentukan
-            $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
+            $product = Product::find($product_id);
             if ($product) {
-                $cart_items[] = [
+                $cart->items()->create([
                     'product_id' => $product_id,
-                    'name' => $product->name,
-                    'image' => $product->images[0],
                     'quantity' => $quantity,
-                    'unit_amount' => $product->price,
-                    'total_amount' => $product->price * $quantity
-                ];
+                    'unit_price' => $product->price,
+                    'total_price' => $product->price * $quantity,
+                    'selected' => false,
+                ]);
             }
         }
 
-        // Simpan kembali item keranjang ke dalam cookie
-        self::addCartItemsToCookie($cart_items);
-
-        // Kembalikan jumlah total item dalam keranjang
-        return count($cart_items);
+        return $cart->items->count();
     }
 
-    // remove item from cart
-    static public function removeCartItem($product_id)
+    public static function getCartItemsFromDb()
     {
-        $cart_items = self::getCartItemsFromCookie();
+        $cart = Cart::where('user_id', Auth::id())->first();
+        return $cart ? $cart->items()->with('product')->get() : collect();
+    }
 
-        foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
-                unset($cart_items[$key]);
-            }
+    public static function getSelectedItemsFromDb()
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if ($cart) {
+            return $cart->items()->where('selected', true)->pluck('product_id')->toArray();
         }
-
-        self::addCartItemsToCookie($cart_items);
-
-        return $cart_items;
+        return [];
     }
 
-
-    // remove items to cookie
-    static public function addCartItemsToCookie($cart_items)
+    public static function addSelectedItem($product_id)
     {
-        Cookie::queue('cart_items', json_encode($cart_items), 60 * 24 * 30);
-    }
-
-    // add cart items to cookie
-    static public function ClearCartItems()
-    {
-        Cookie::queue(Cookie::forget('cart_items'));
-    }
-
-
-    // get all cart items from cookie
-    static public function getCartItemsFromCookie()
-    {
-        $cart_items = json_decode(Cookie::get('cart_items'), true);
-        if (!$cart_items) {
-            $cart_items = [];
-        }
-
-        return $cart_items;
-    }
-
-
-    // increment item quantity
-    static public function increamentQuantityToCartItem($product_id)
-    {
-        $cart_items = self::getCartItemsFromCookie();
-
-        foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
-                $cart_items[$key]['quantity']++;
-                $cart_items[$key]['total_amount'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_amount'];
-            }
-        }
-
-        self::addCartItemsToCookie($cart_items);
-        return $cart_items;
-    }
-
-    // decrement item quantity
-    static public function decrementQuantityToCartItem($product_id)
-    {
-        $cart_items = self::getCartItemsFromCookie();
-        foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
-                if ($cart_items[$key]['quantity'] > 1) {
-                    $cart_items[$key]['quantity']--;
-                    $cart_items[$key]['total_amount'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_amount'];
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if ($cart) {
+            $item = $cart->items()->where('product_id', $product_id)->first();
+            if ($item) {
+                $item->selected = true;
+                $item->save();
+                $selected_items = session()->get('selected_items', []);
+                if (!in_array($product_id, $selected_items)) {
+                    $selected_items[] = $product_id;
+                    session()->put('selected_items', $selected_items);
                 }
             }
         }
-
-        self::addCartItemsToCookie($cart_items);
-        return $cart_items;
     }
 
-    // calculate grand total
-    static public function calculateGrandTotal($items)
+    public static function removeSelectedItem($product_id)
     {
-        return array_sum(array_column($items, 'total_amount'));
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if ($cart) {
+            $item = $cart->items()->where('product_id', $product_id)->first();
+            if ($item) {
+                $item->selected = false;
+                $item->save();
+                $selected_items = session()->get('selected_items', []);
+                $selected_items = array_diff($selected_items, [$product_id]);
+                session()->put('selected_items', $selected_items);
+            }
+        }
+    }
+
+    public static function calculateGrandTotal($cart_items)
+    {
+        return collect($cart_items)->sum('total_price');
+    }
+
+    public static function removeCartItem($product_id)
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if ($cart) {
+            $cart->items()->where('product_id', $product_id)->delete();
+        }
+
+        return $cart ? $cart->items : [];
+    }
+
+    public static function incrementQuantity($product_id)
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if ($cart) {
+            $item = $cart->items()->where('product_id', $product_id)->first();
+            if ($item) {
+                $item->quantity++;
+                $item->total_price = $item->quantity * $item->unit_price;
+                $item->save();
+            }
+        }
+
+        return $cart ? $cart->items : [];
+    }
+
+    public static function decrementQuantity($product_id)
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if ($cart) {
+            $item = $cart->items()->where('product_id', $product_id)->first();
+            if ($item && $item->quantity > 1) {
+                $item->quantity--;
+                $item->total_price = $item->quantity * $item->unit_price;
+                $item->save();
+            }
+        }
+
+        return $cart ? $cart->items : [];
+    }
+
+    public static function clearCart()
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if ($cart) {
+            $cart->items()->delete();
+            $cart->delete();
+        }
+    }
+
+    public static function getSelectedItems()
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if (!$cart) {
+            return collect();
+        }
+
+        return $cart->items()
+            ->where('selected', true)
+            ->with('product')
+            ->get();
+    }
+
+    public static function prepareCheckout()
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if (!$cart) {
+            return false;
+        }
+
+        $selected_items = $cart->items()
+            ->where('selected', true)
+            ->with('product')
+            ->get();
+
+        if ($selected_items->isEmpty()) {
+            return false;
+        }
+
+        $subtotal = $selected_items->sum('total_price');
+        $tax = $subtotal * 0.1;
+
+        session([
+            'checkout_items' => $selected_items->pluck('product_id')->toArray(),
+            'checkout_subtotal' => $subtotal,
+            'checkout_tax' => $tax
+        ]);
+
+        return true;
+    }
+    public static function getSelectedItemsForCheckout()
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if (!$cart) {
+            return collect();
+        }
+
+        $checkout_items = session()->get('checkout_items', []);
+        return $cart->items()
+            ->whereIn('product_id', $checkout_items)
+            ->with('product')
+            ->get();
+    }
+
+    public static function clearSelectedItems()
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+        if ($cart) {
+            $cart->items()->where('selected', true)->delete();
+            if ($cart->items()->count() === 0) {
+                $cart->delete();
+            }
+        }
+
+        session()->forget(['selected_items', 'checkout_items', 'checkout_subtotal', 'checkout_tax']);
     }
 }

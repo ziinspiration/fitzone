@@ -13,7 +13,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use App\Helpers\CartManagement;
 
-#[Title('Product - FitZone')]
+#[Title('Products - Fitzone')]
 class ProductsPage extends Component
 {
     use LivewireAlert;
@@ -33,10 +33,9 @@ class ProductsPage extends Component
 
     public $price_range = 5000;
 
-    //add product to cart method
     public function addToCart($product_id)
     {
-        $total_count = CartManagement::addItemToCartWithQty($product_id, 1);
+        $total_count = CartManagement::addItemToCart($product_id, 1);
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
         $this->alert('success', 'Success added to cart successfuly!', [
             'position' => 'bottom-end',
@@ -44,7 +43,6 @@ class ProductsPage extends Component
             'toast' => 'true',
         ]);
     }
-
 
     public function render()
     {

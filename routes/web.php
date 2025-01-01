@@ -23,7 +23,7 @@ Route::get('/', HomePage::class);
 Route::get('/categories', CategoriesPage::class);
 Route::get('/products', ProductsPage::class);
 Route::get('/cart', CartPage::class);
-Route::get('/products/{slug}', ProductDetailPage::class);
+Route::get('/products/{slug}', ProductDetailPage::class)->name('products.show');
 
 
 Route::middleware('guest')->group(function () {
