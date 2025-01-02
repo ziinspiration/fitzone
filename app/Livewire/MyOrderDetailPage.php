@@ -7,7 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 #[Title('Order Detail - Fitzone')]
 class MyOrderDetailPage extends Component
@@ -28,5 +28,18 @@ class MyOrderDetailPage extends Component
             'address' => $order->address,
             'order' => $order
         ]);
+    }
+
+    public function downloadPDF()
+    {
+        $order = Order::with('orderItems.product', 'address')->where('id', $this->order_id)->first();
+        $pdf = PDF::loadView('pdf.order-detail', [
+            'order' => $order,
+            'address' => $order->address
+        ]);
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, $order->order_number . '.pdf');
     }
 }

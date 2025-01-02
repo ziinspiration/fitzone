@@ -22,6 +22,10 @@ class Order extends Model
         'total_amount',
         'shipping_service',
         'status',
+        'payment_status',
+        'payment_method',
+        'payment_token',
+        'paid_at'
     ];
 
     public function user()
