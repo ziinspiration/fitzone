@@ -13,7 +13,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use App\Helpers\CartManagement;
 
-#[Title('Products - Fitzone')]
+#[Title('Product - FitZone')]
 class ProductsPage extends Component
 {
     use LivewireAlert;
@@ -33,14 +33,25 @@ class ProductsPage extends Component
 
     public $price_range = 5000;
 
+    #[Url]
+    public $search = '';
+
+    #[Url]
+    public $sort = 'latest';
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
     public function addToCart($product_id)
     {
         $total_count = CartManagement::addItemToCart($product_id, 1);
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
-        $this->alert('success', 'Successfully added to cart!', [ // Memperbaiki typo di sini
+        $this->alert('success', 'Successfully added to cart!', [
             'position' => 'bottom-end',
             'timer' => 3000,
-            'toast' => true, // Mengubah 'true' menjadi boolean
+            'toast' => true,
         ]);
     }
 
