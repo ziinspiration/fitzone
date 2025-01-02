@@ -10,8 +10,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Faker\Provider\ar_EG\Text;
-use Illuminate\Support\Number;
+use NumberFormatter;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -26,14 +25,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\SelectColumn;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\ToggleButtons;
 use App\Filament\Resources\OrderResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
-
 
 class OrderResource extends Resource
 {
@@ -46,98 +42,73 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            // Form untuk order
             ->schema([
                 Group::make()->schema([
                     Section::make('Order Information')->schema([
-                        Select::make('user_id')
+                        TextInput::make('order_number')
+                            ->label('Order ID')
+                            ->disabled()
+                            ->required()
+                            ->formatStateUsing(fn(?string $state, Get $get) => $get('order_number')),
+
+                        TextInput::make('user.full_name')
                             ->label('Customer')
-                            ->relationship('user', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-
-                        Select::make('payment_method')
-                            ->options([
-                                'stripe' => 'Stripe',
-                                'cod' => 'Cash on Delivery'
-                            ])
-                            ->required(),
-
-                        Select::make('payment_status')
-                            ->options([
-                                'pending' => 'Pending',
-                                'paid' => 'Paid',
-                                'failed' => 'Failed'
-                            ])
-                            ->default('pending')
-                            ->required(),
+                            ->disabled()
+                            ->required()
+                            ->formatStateUsing(fn(?string $state, Get $get) => $get('user.full_name')),
 
                         ToggleButtons::make('status')
                             ->inline()
-                            ->default('new')
+                            ->default('pending')
                             ->required()
                             ->options([
-                                'new' => 'New',
+                                'pending' => 'Pending',
                                 'processing' => 'Processing',
                                 'shipped' => 'Shipped',
-                                'delivered' => 'DeliveredX',
+                                'delivered' => 'Delivered',
                                 'cancelled' => 'Cancelled',
                             ])
-
                             ->colors([
-                                'new' => 'info',
+                                'pending' => 'info',
                                 'processing' => 'warning',
                                 'shipped' => 'success',
                                 'delivered' => 'success',
                                 'cancelled' => 'warning',
-                            ])
-
-                            ->icons([
-                                'new' => 'heroicon-m-sparkles',
-                                'processing' => 'heroicon-m-arrow-path',
-                                'shipped' => 'heroicon-m-truck',
-                                'delivered' => 'heroicon-m-check-badge',
-                                'cancelled' => 'heroicon-m-x-circle',
                             ]),
 
-                        Select::make('currency')
-                            ->options([
-                                'idr' => 'IDR',
-                                'usd' => 'USD',
-                                'eur' => 'EUR'
-                            ])
-                            ->default('idr')
-                            ->required(),
+                        TextInput::make('shipping_service')
+                            ->label('Courier Service')
+                            ->required()
+                            ->formatStateUsing(fn(string $state): string => strtoupper(str_replace('_', ' ', $state))),
 
-                        Select::make('shipping_method')
-                            ->options([
-                                'fedex' => 'FedEx',
-                                'ups' => 'UPS',
-                                'dhl' => 'DHL',
-                                'usps' => 'USPS',
-                            ]),
-
-                        Textarea::make('notes')
-                            ->columnSpanFull()
-                    ])->columns(2),
+                        TextInput::make('shipping_cost')
+                            ->label('Shipping Cost')
+                            ->required()
+                            ->numeric()
+                            ->minValue(0)
+                    ])->columns(1),
 
                     Section::make('Order Items')->schema([
                         Repeater::make('items')
                             ->relationship()
                             ->schema([
-
                                 Select::make('product_id')
                                     ->relationship('product', 'name')
                                     ->searchable()
                                     ->preload()
                                     ->required()
                                     ->distinct()
-                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->columnSpan(4)
                                     ->reactive()
-                                    ->afterStateUpdated(fn($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
-                                    ->afterStateUpdated(fn($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0)),
+                                    ->afterStateUpdated(fn($state, Set $set) => $set('unit_price', Product::find($state)?->price ?? 0))
+                                    ->afterStateUpdated(fn($state, Set $set) => $set('total_price', Product::find($state)?->price ?? 0)),
+
+                                TextInput::make('unit_price')
+                                    ->numeric()
+                                    ->required()
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->columnSpan(3),
 
                                 TextInput::make('quantity')
                                     ->numeric()
@@ -146,39 +117,79 @@ class OrderResource extends Resource
                                     ->minValue(1)
                                     ->columnSpan(2)
                                     ->reactive()
-                                    ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount'))),
+                                    ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_price', $state * $get('unit_price'))),
 
-                                TextInput::make('unit_amount')
-                                    ->numeric()
-                                    ->required()
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->columnSpan(3),
-
-                                TextInput::make('total_amount')
+                                TextInput::make('total_price')
                                     ->numeric()
                                     ->required()
                                     ->dehydrated()
                                     ->columnSpan(3),
-
-                            ])->columns(12),
-
-                        Placeholder::make('grand_total_placeholder')
-                            ->label('Grand Total')
-                            ->content(function (Get $get, Set $set) {
+                            ])->columns(12)
+                            ->afterStateUpdated(function (Set $set, Get $get) {
                                 $total = 0;
-                                if (!$repeaters = $get('items')) {
-                                    return $total;
+                                foreach ($get('items') ?? [] as $item) {
+                                    $total += $item['total_price'] ?? 0;
                                 }
-
-                                foreach ($repeaters as $key => $repeater) {
-                                    $total += $get("items.{$key}.total_amount");
-                                }
-                                $set('grand_total', $total);
-                                return Number::currency($total, 'IDR');
+                                $set('total_price', $total);
                             }),
 
-                        Hidden::make('grand_total')
+                        // Subtotal
+                        Placeholder::make('items_total_placeholder')
+                            ->label(' ')
+                            ->content(function (Get $get) {
+                                $total = 0;
+                                foreach ($get('items') ?? [] as $item) {
+                                    $total += $item['total_price'] ?? 0;
+                                }
+                                $formatter = new NumberFormatter('id_ID', NumberFormatter::CURRENCY);
+                                return 'Subtotal = ' . $formatter->formatCurrency($total, 'IDR');
+                            })
+                            ->columnSpan(6),
+
+                        // Shipping Cost
+                        Placeholder::make('shipping_cost_placeholder')
+                            ->label(' ')
+                            ->content(function (Get $get) {
+                                $shippingCost = $get('shipping_cost') ?? 0;
+                                $formatter = new NumberFormatter('id_ID', NumberFormatter::CURRENCY);
+                                return 'Shipping Cost = ' . $formatter->formatCurrency($shippingCost, 'IDR');
+                            })
+                            ->columnSpan(6),
+
+                        // Tax (10%)
+                        Placeholder::make('tax_amount_placeholder')
+                            ->label(' ')
+                            ->content(function (Get $get) {
+                                $total = 0;
+                                foreach ($get('items') ?? [] as $item) {
+                                    $total += $item['total_price'] ?? 0;
+                                }
+                                $taxAmount = $total * 0.1;
+                                $formatter = new NumberFormatter('id_ID', NumberFormatter::CURRENCY);
+                                return 'Tax (10%) = ' . $formatter->formatCurrency($taxAmount, 'IDR');
+                            })
+                            ->columnSpan(6),
+
+                        // Grand Total (with larger font)
+                        Placeholder::make('total_amount_placeholder')
+                            ->label('----------------------------------')
+                            ->content(function (Get $get) {
+                                $total = 0;
+                                foreach ($get('items') ?? [] as $item) {
+                                    $total += $item['total_price'] ?? 0;
+                                }
+                                $shippingCost = $get('shipping_cost') ?? 0;
+                                $taxAmount = $total * 0.1;
+                                $totalAmount = $total + $shippingCost + $taxAmount;
+
+                                $formatter = new NumberFormatter('id_ID', NumberFormatter::CURRENCY);
+                                return 'Total = ' . $formatter->formatCurrency($totalAmount, 'IDR');
+                            })
+                            ->columnSpan(6)
+                            ->extraAttributes(['style' => 'font-size: 1.25rem; font-weight: bold;']), // Larger font size for "Total"
+
+                        // Hidden Total Amount
+                        Hidden::make('total_amount')
                             ->default(0)
                     ])
                 ])->columnSpanFull()
@@ -189,35 +200,29 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')
+                TextColumn::make('user.full_name')
                     ->label('Customer')
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('grand_total')
-                    ->numeric()
+                TextColumn::make('order_number')
+                    ->label('Order ID')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('total_amount')
                     ->sortable()
                     ->money('IDR'),
 
-                TextColumn::make('payment_method')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('payment_status')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('currency')
+                TextColumn::make('shipping_service')
+                    ->label('Courier Service')
                     ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('shipping_method')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(fn(string $state): string => strtoupper(str_replace('_', ' ', $state))),
 
                 SelectColumn::make('status')
                     ->options([
-                        'new' => 'New',
+                        'pending' => 'Pending',
                         'processing' => 'Processing',
                         'shipped' => 'Shipped',
                         'delivered' => 'Delivered',
@@ -235,7 +240,6 @@ class OrderResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
-
             ])
             ->filters([
                 //
@@ -268,7 +272,7 @@ class OrderResource extends Resource
 
     public static function getNavigationBadgeColor(): string|array|null
     {
-        return static::getModel()::count() > 10 ? 'succes' : 'danger';
+        return static::getModel()::count() > 10 ? 'success' : 'danger';
     }
 
     public static function getPages(): array

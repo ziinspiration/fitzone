@@ -32,22 +32,25 @@ class AddressRelationManager extends RelationManager
                     ->tel()
                     ->maxLength(20),
 
-                TextInput::make('city')
+                TextInput::make('street_address')
                     ->required()
                     ->maxLength(255),
 
-                TextInput::make('state')
+                TextInput::make('district')
                     ->required()
                     ->maxLength(255),
 
-                TextInput::make('zip_code')
+                TextInput::make('city_id')
                     ->required()
-                    ->numeric()
                     ->maxLength(10),
 
-                Textarea::make('street_address')
+                TextInput::make('province_id')
                     ->required()
-                    ->columnSpanFull(),
+                    ->maxLength(10),
+
+                TextInput::make('postal_code')
+                    ->required()
+                    ->maxLength(10),
             ]);
     }
 
@@ -56,21 +59,26 @@ class AddressRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('street_address')
             ->columns([
-                TextColumn::make('fullname')
+                TextColumn::make('full_name')
                     ->label('Full Name')
-                    ->getStateUsing(fn($record) => $record->fullname ?? 'No Name'),
+                    ->getStateUsing(fn($record) => $record->full_name ?? 'No Name'),
 
                 TextColumn::make('phone'),
 
-                TextColumn::make('city'),
-
-                TextColumn::make('state'),
-
-                TextColumn::make('zip_code'),
-
                 TextColumn::make('street_address')
-                    ->label('Street Address')
-                    ->getStateUsing(fn($record) => $record->street_address ?? 'No Address'),
+                    ->label('Street Address'),
+
+                TextColumn::make('district')
+                    ->label('District'),
+
+                TextColumn::make('city_name')
+                    ->label('City'),
+
+                TextColumn::make('province_name')
+                    ->label('Province'),
+
+                TextColumn::make('postal_code')
+                    ->label('Postal Code'),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),

@@ -40,17 +40,23 @@
             <h1 class="text-3xl font-bold text-gray-900">Create Your Account</h1>
             <p class="mt-2 text-sm text-gray-600">
               Already have an account?
-              <a wire:navigate href="/login" class="text-primary-600 hover:text-primary-500 font-medium ml-1 transition duration-150">
+              <a wire:navigate href="/signin" class="text-primary-600 hover:text-primary-500 font-medium ml-1 transition duration-150">
                 Sign in here
               </a>
             </p>
           </div>
 
-          <form wire:submit.prevent="save" class="space-y-6">
+          <form wire:submit.prevent="register" class="space-y-6">
             <div class="space-y-2">
-              <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-              <input wire:model="name" type="text" id="name" class="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-150" placeholder="Enter your name">
-              @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                <input wire:model="first_name" type="text" id="first_name" class="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-150" placeholder="Enter your first name">
+                @error('first_name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="space-y-2">
+                <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                <input wire:model="last_name" type="text" id="last_name" class="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-150" placeholder="Enter your last name">
+                @error('last_name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
 
             <div class="space-y-2">
@@ -65,6 +71,12 @@
               @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
 
+            <div class="space-y-2">
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input wire:model="password_confirmation" type="password" id="password_confirmation" class="block w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-150" placeholder="Enter your cofirm password">
+                @error('password_confirmation') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+              </div>
+
             <button type="submit" class="w-full py-3 px-4 text-white bg-primary-600 hover:bg-primary-700 rounded-lg font-medium transition duration-150">
               <span wire:loading.remove>Sign up</span>
               <span wire:loading>
@@ -72,21 +84,33 @@
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Creating account...
+                <span>Creating account...</span>
               </span>
             </button>
           </form>
 
           <!-- Success Message -->
-          <div wire:loading.remove class="mt-6 bg-green-100 p-4 rounded-lg text-green-800 shadow-md">
-            <div class="flex items-center">
-              <svg class="w-6 h-6 mr-2 text-green-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 12l2 2l4 -4"></path>
-              </svg>
-              <span class="font-semibold">Registration Successful!</span>
-            </div>
-            <p class="mt-2 text-sm">You have successfully created your account. Start shopping and enjoy exclusive offers!</p>
-          </div>
+            @if (session()->has('success'))
+                <div class="mt-6 bg-green-100 p-4 rounded-lg text-green-800 shadow-md">
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-green-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 12l2 2l4 -4"></path>
+                        </svg>
+                        <span class="font-semibold">{{ session('success') }}</span>
+                    </div>
+                </div>
+            @endif
+
+            @if (session()->has('error'))
+                <div class="mt-6 bg-red-100 p-4 rounded-lg text-red-800 shadow-md">
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span class="font-semibold">{{ session('error') }}</span>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- Right: Enhanced Featured Content -->

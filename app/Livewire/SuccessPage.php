@@ -6,7 +6,6 @@ use App\Models\Order;
 use Livewire\Component;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Title;
-use Illuminate\Support\Facades\Session;
 
 #[Title('Success - FitZone')]
 class SuccessPage extends Component
@@ -16,10 +15,14 @@ class SuccessPage extends Component
 
     public function render()
     {
+        if (!auth()->check()) {
+            abort(403, 'User is not authenticated');
+        }
+
         $latest_order = Order::with('address')->where('user_id', auth()->user()->id)->latest()->first();
 
-        if (!auth()->check()) {
-            dd('User is not authenticated');
+        if (!$latest_order) {
+            abort(404, 'Order not found');
         }
 
         return view('livewire.success-page', [
