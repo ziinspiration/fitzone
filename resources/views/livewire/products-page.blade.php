@@ -1,8 +1,7 @@
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 mt-10">
     <div class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 lg:px-8 ">
         <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-gray-800 mt-10">
-            <h1 class="text-5xl font-bold dark:text-gray-200 mb-5"> Browse Product with <span class="text-primary-700">FitZone
-            </span> </h1>
+            <h1 class="text-5xl font-bold dark:text-gray-200 mb-5"> Browse Product with <span class="text-primary-700">FitZone</span></h1>
             <div class="flex flex-col gap-8 lg:flex-row">
                 {{-- Filters Sidebar --}}
                 <div class="lg:w-1/4">
@@ -18,8 +17,7 @@
                             <div class="space-y-3">
                                 @foreach ($categories as $category)
                                     <label class="flex items-center gap-3" wire:key="{{ $category->id }}">
-                                        <input type="checkbox" wire:model.live="selected_categories" 
-                                            value="{{ $category->id }}" 
+                                        <input type="checkbox" wire:model.live="selected_categories" value="{{ $category->id }}" 
                                             class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                         <span class="text-sm text-gray-600 dark:text-gray-400">{{ $category->name }}</span>
                                     </label>
@@ -27,6 +25,7 @@
                             </div>
                         </div>
 
+                        
                         {{-- Brands Filter --}}
                         <div class="rounded-xl bg-gray-50 p-5 dark:bg-gray-900">
                             <div class="mb-4 flex items-center justify-between">
@@ -87,28 +86,82 @@
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
 
                 {{-- Products Grid --}}
                 <div class="lg:w-3/4">
-                    {{-- Sort Bar --}}
-                    <div class="mb-6 flex items-center justify-between rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                            Showing {{ $products->count() }} products
-                        </span>
-                        <select wire:model.live="sort" 
-                            class="rounded-lg border-0 bg-white px-4 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-200">
-                            <option value="latest">Sort by latest</option>
-                            <option value="price_low">Price: Low to High</option>
-                            <option value="price_high">Price: High to Low</option>
-                            <option value="name">Name</option>
-                        </select>
+                    {{-- Sort and Search Bar --}}
+                    <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
+                        <div class="relative flex-1">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <svg class="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input 
+                                wire:model.live.debounce.300ms="search"
+                                type="search"
+                                class="w-full rounded-lg border-0 bg-white pl-10 pr-4 py-2 text-sm shadow-sm focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-indigo-600"
+                                placeholder="Search products..."
+                            >
+                        </div>
+                        
+                        <div class="flex items-center justify-between gap-4">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">
+                                Showing {{ $products->count() }} products
+                            </span>
+                            <select wire:model.live="sort" 
+                                class="rounded-lg border-0 bg-white px-4 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-200">
+                                <option value="latest">Sort by latest</option>
+                                <option value="price_low">Price: Low to High</option>
+                                <option value="price_high">Price: High to Low</option>
+                                <option value="name">Name</option>
+                            </select>
+                        </div>
                     </div>
 
-                    {{-- Products Grid --}}
-                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        @foreach ($products as $product)
+                    @if($products->isEmpty())
+                        <div class="flex flex-col items-center justify-center p-8 min-h-[400px] rounded-xl bg-gray-50 dark:bg-gray-900">
+                            <div class="w-48 h-48 mb-6">
+                                <svg class="w-full h-full text-gray-300 dark:text-gray-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15.5 15.5L19 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M5 11C5 14.3137 7.68629 17 11 17C12.6597 17 14.1621 16.3261 15.2483 15.2483C16.3261 14.1621 17 12.6597 17 11C17 7.68629 14.3137 5 11 5C7.68629 5 5 7.68629 5 11Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 8V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M15 11H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">No Products Found</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-center mb-6">
+                                @if($search)
+                                    We couldn't find any products matching "{{ $search }}". <br>
+                                @else
+                                    No products match the selected filters. <br>
+                                @endif
+                                Try adjusting your search or filters.
+                            </p>
+                            <div class="flex gap-4">
+                                @if($search)
+                                    <button 
+                                        wire:click="$set('search', '')"
+                                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                                        Clear Search
+                                    </button>
+                                @endif
+                                @if(!empty($selected_categories) || !empty($selected_brands) || $featured || $on_sale)
+                                    <button 
+                                        wire:click="resetFilters"
+                                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 transition-colors">
+                                        Reset Filters
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    @else
+                        {{-- Your existing products grid code --}}
+                        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            @foreach ($products as $product)
                             <div wire:key="{{ $product->id }}" class="group">
                                 <div class="overflow-hidden rounded-2xl bg-white shadow-lg transition-shadow hover:shadow-xl dark:bg-gray-800">
                                     {{-- Image Container --}}
@@ -173,14 +226,14 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach 
-                    </div>
+                            @endforeach
+                        </div>
 
-
-                    {{-- Pagination --}}
-                    <div class="mt-8">
-                        {{ $products->links() }}
-                    </div>
+                        {{-- Pagination --}}
+                        <div class="mt-8">
+                            {{ $products->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
