@@ -189,7 +189,6 @@
                 </div>
             </div>
 
-<<<<<<< HEAD
             {{-- Product Reviews --}}
             <div class="max-w-6xl mx-auto px-4 mt-8 mb-8">
                 <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
@@ -314,8 +313,6 @@
                         </div>
                         {{-- Repeat Review Item as Needed --}}
                     </div>
-=======
->>>>>>> dce9cb0a7752fcaa458b9e5557b06001bde53fdd
                 </div>
             </div>
         </div>
