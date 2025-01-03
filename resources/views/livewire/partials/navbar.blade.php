@@ -12,17 +12,24 @@
               <button id="hs-dropdown-custom-trigger" type="button" class="border border-primary-700 hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
                 <div class="shrink-0 group block ">
                   <div class="flex items-center ">
-                    <img class="inline-block shrink-0 size-[45px] rounded-full " src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Avatar">
+                    @if(auth()->user()->avatar)
+                    <img class="inline-block shrink-0 w-10 h-10 rounded-full" src="{{ Storage::url(auth()->user()->avatar) }}" alt="Avatar">
+                @else
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span class="text-2xl font-bold text-gray-500">{{ substr(auth()->user()->full_name, 0, 1) }}</span>
+                    </div>
+                @endif
+
                     <div class="ms-3">
                       <h3 class="font-semibold text-gray-800 dark:text-white text-left">{{ auth()->user()->name }}</h3>
-                      <p class="text-sm font-medium text-gray-400 dark:text-neutral-500 text-left">{{ auth()->user()->email }}</p>
+                      <p class="text-sm font-medium text-gray-400 dark:text-neutral-500 text-left">{{ auth()->user()->full_name }}</p>
                     </div>
-                    
+
                   </div>
                 </div>
                 <svg class="hs-dropdown-open:rotate-180 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
               </button>
-  
+
               <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-60 bg-white shadow-md rounded-lg mt-2 dark:bg-neutral-800 dark:border dark:border-neutral-700" role="menu">
                 <div class="p-1 space-y-0.5">
                   <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300" href="/my-orders">
@@ -41,17 +48,17 @@
               </div>
             </div>
           @else
-            <a wire:navigate href="/login">
+            <a href="/signin">
               <button type="button" class="flex items-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">
                 <svg class="flex-shrink-0 w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
-                Login
+                Sign in
               </button>
             </a>
           @endauth
-  
+
           <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
             <span class="sr-only">Open main menu</span>
             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
@@ -81,9 +88,8 @@
             </li>
           </ul>
         </div>
-  
-        
+
+
       </div>
     </nav>
   </header>
-  

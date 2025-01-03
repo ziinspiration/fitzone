@@ -3,18 +3,18 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mt-10">
             <div class="flex flex-col lg:flex-row gap-8 p-6">
                 {{-- Image Gallery Section --}}
-                <div class="w-full lg:w-3/5" x-data="{ 
+                <div class="w-full lg:w-3/5" x-data="{
                     activeImage: '{{ isset($product->images[0]) ? url('storage', $product->images[0]) : url('images/default-product.jpg') }}',
                     zoom: false
                 }">
                     {{-- Main Image --}}
                     <div class="relative aspect-square mb-4 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-900">
-                        <img x-bind:src="activeImage" 
+                        <img x-bind:src="activeImage"
                             alt="{{ $product->name ?? 'Product Image' }}"
                             class="w-full h-full object-cover transition duration-300 ease-in-out"
                             x-bind:class="{ 'scale-125 cursor-zoom-out': zoom, 'cursor-zoom-in': !zoom }"
                             @click="zoom = !zoom">
-                            
+
                         @if($product->on_sale)
                             <div class="absolute top-4 right-4">
                                 <span class="bg-rose-600 text-white text-sm font-medium px-3 py-1.5 rounded-full">
@@ -27,11 +27,11 @@
                     {{-- Thumbnail Gallery --}}
                     <div class="grid grid-cols-4 gap-4">
                         @forelse ($product->images ?? [] as $image)
-                            <button 
+                            <button
                                 @click="activeImage = '{{ url('storage', $image) }}'"
                                 class="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 relative">
-                                <img 
-                                    src="{{ url('storage', $image) }}" 
+                                <img
+                                    src="{{ url('storage', $image) }}"
                                     alt="{{ $product->name ?? 'Product Image' }}"
                                     class="w-full h-full object-cover hover:opacity-75 transition"
                                     :class="{ 'ring-2 ring-offset-2 ring-black dark:ring-white': activeImage === '{{ url('storage', $image) }}' }">
@@ -161,15 +161,20 @@
 
                     {{-- Add to Cart --}}
                     <button wire:click="addToCart({{ $product->id }})"
+                        @if (!auth()->check())
+                            wire:click.prevent="redirectToLogin"
+                            disabled
+                        @endif
                         class="w-full bg-primary-700 dark:bg-white text-white dark:text-black font-medium py-4 rounded-xl hover:bg-primary-900 dark:hover:bg-gray-100 transition-colors">
-                        <span wire:loading.remove>Add to Cart</span>
-                        <span wire:loading>
-                            <svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </span>
-                    </button>
+                    <span wire:loading.remove>Add to Cart</span>
+                    <span wire:loading>
+                        <svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                </button>
+
 
                     {{-- Shipping Info --}}
                     <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
@@ -178,12 +183,13 @@
                                 <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                             </svg>
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Free shipping on orders over $100</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Shipping using POS Indonesia & Jne</span>
                         </div>
                     </div>
                 </div>
             </div>
 
+<<<<<<< HEAD
             {{-- Product Reviews --}}
             <div class="max-w-6xl mx-auto px-4 mt-8 mb-8">
                 <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
@@ -308,6 +314,8 @@
                         </div>
                         {{-- Repeat Review Item as Needed --}}
                     </div>
+=======
+>>>>>>> dce9cb0a7752fcaa458b9e5557b06001bde53fdd
                 </div>
             </div>
         </div>

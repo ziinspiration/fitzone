@@ -3,97 +3,93 @@
 namespace App\Livewire\Auth;
 
 use Livewire\Component;
-use Illuminate\Support\Str;
-use Livewire\Attributes\Url;
 use Livewire\Attributes\Title;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Auth\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
-#[Title('Reset Password')]
+#[Title('Reset Password - Fitzone')]
 class ResetPasswordPage extends Component
 {
     public $token;
-    #[Url]
     public $email;
     public $password;
     public $password_confirmation;
-    public $error;
 
-    public function mount($token)
+    public function mount(Request $request)
     {
-        $this->token = $token;
-        if (empty($this->email)) {
-            $email = $this->getEmailFromToken($token);
-            if ($email) {
-                $this->email = $email;
-            }
-        }
-    }
+        $this->token = $request->query('token');
+        $this->email = $request->query('email');
 
-    protected function getEmailFromToken($token)
-    {
         $tokenData = DB::table('password_reset_tokens')
-            ->where('token', Hash::make($token))
+            ->where('email', $this->email)
+            ->where('token', $this->token)
             ->first();
-            
-        return $tokenData ? $tokenData->email : null;
-    }
 
-    public function save()
-    {
-        $this->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => [
-                'required',
-                'min:8',
-                'confirmed',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
-            ]
-        ], [
-            'password.regex' => 'Password harus mengandung minimal 1 huruf besar, 1 huruf kecil, dan 1 angka'
-        ]);
+        if (!$tokenData) {
+            session()->flash('error', 'The reset token is invalid or has expired.');
+            return redirect()->route('forgot-password');
+        }
 
-        try {
-            $status = Password::reset(
-                [
-                    'email' => $this->email,
-                    'password' => $this->password,
-                    'password_confirmation' => $this->password_confirmation,
-                    'token' => $this->token
-                ],
-                function (User $user, string $password) {
-                    $user->forceFill([
-                        'password' => Hash::make($password),
-                        'remember_token' => Str::random(60)
-                    ])->save();
+        $tokenCreatedAt = Carbon::parse($tokenData->created_at);
+        if ($tokenCreatedAt->diffInHours(now()) > 1) {
+            DB::table('password_reset_tokens')
+                ->where('email', $this->email)
+                ->delete();
 
-                    event(new PasswordReset($user));
-                }
-            );
-
-            if ($status === Password::PASSWORD_RESET) {
-                // Dispatch event untuk SweetAlert
-                $this->dispatch('success', [
-                    'message' => 'Password berhasil direset!'
-                ]);
-            } else {
-                $this->dispatch('error', [
-                    'message' => trans($status)
-                ]);
-            }
-        } catch (\Exception $e) {
-            $this->dispatch('error', [
-                'message' => "Terjadi kesalahan saat mereset password. " . $e->getMessage()
-            ]);
+            session()->flash('error', 'The reset token has expired. Please request a new reset link.');
+            return redirect()->route('forgot-password');
         }
     }
 
     public function render()
     {
         return view('livewire.auth.reset-password-page');
+    }
+
+    public function updatePassword()
+    {
+        $this->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*?&]/',
+            ]
+        ], [
+            'password.min' => 'Password must be at least 8 characters long.',
+            'password.confirmed' => 'Password confirmation does not match.',
+            'password.regex' => 'Password must contain lowercase letters, uppercase letters, numbers, and symbols.',
+        ]);
+
+        $user = User::where('email', $this->email)->first();
+
+        if (!$user) {
+            session()->flash('error', 'Account not found.');
+            return back();
+        }
+
+        if (Hash::check($this->password, $user->password)) {
+            session()->flash('error', 'The new password cannot be the same as the old password.');
+            return back();
+        }
+
+        $user->password = Hash::make($this->password);
+        $user->save();
+
+        DB::table('password_reset_tokens')
+            ->where('email', $this->email)
+            ->delete();
+
+        session()->flash('success', 'Your password has been successfully updated. Please log in with your new password.');
+
+        return redirect()->to('/signin');
     }
 }

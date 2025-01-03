@@ -11,8 +11,10 @@ use App\Livewire\MyAccountPage;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\CategoriesPage;
 use App\Livewire\Auth\RegisterPage;
+use App\Livewire\Auth\OtpVerify;
 use App\Livewire\MyOrderDetailPage;
 use App\Livewire\ProductDetailPage;
+use App\Livewire\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\Payment\PaymentSuccess;
@@ -22,14 +24,15 @@ Route::get('/', HomePage::class);
 Route::get('/categories', CategoriesPage::class);
 Route::get('/products', ProductsPage::class);
 Route::get('/cart', CartPage::class);
-Route::get('/products/{slug}', ProductDetailPage::class);
+Route::get('/products/{slug}', ProductDetailPage::class)->name('products.show');
 
 
 Route::middleware('guest')->group(function () {
-    Route::get('/login', LoginPage::class)->name('login');
-    Route::get('/register', RegisterPage::class);
-    Route::get('/forgot', ForgotPasswordPage::class)->name('password.request');
-    Route::get('/reset/{token}', ResetPasswordPage::class)->name('password.reset');
+    Route::get('/signin', LoginPage::class);
+    Route::get('/signup', RegisterPage::class);
+    Route::get('/forgot-password', ForgotPasswordPage::class)->name('forgot-password');
+    Route::get('/new-password', ResetPasswordPage::class)->name('password.reset');
+    Route::get('/verification', OtpVerify::class)->name('verification');
 });
 
 
@@ -39,13 +42,18 @@ Route::middleware('auth')->group(function () {
         return redirect()->to('/');
     })->name('logout');
 
-    Route::get('/checkout', CheckoutPage::class);
-    Route::get('/my-orders', MyOrdersPage::class);
+    Route::get('/test-midtrans', function () {
+        dd([
+            'server_key' => config('midtrans.server_key'),
+            'client_key' => config('midtrans.client_key'),
+            'is_production' => config('midtrans.is_production'),
+        ]);
+    });
+
+    Route::get('/checkout', CheckoutPage::class)->name('checkout.page');
+    Route::get('/my-orders', MyOrdersPage::class)->name('my-orders');
     Route::get('/my-orders/{order_id}', MyOrderDetailPage::class)->name('my-orders.show');
     Route::get('/success', SuccessPage::class)->name('success');
     Route::get('/cancel', CancelPage::class)->name('cancel');
     Route::get('/my-account', MyAccountPage::class)->name('account');
 });
-
-
-// Route::get('/my-account', MyAccountPage::class)->middleware(['auth'])->name('account');
