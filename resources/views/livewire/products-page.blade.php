@@ -66,27 +66,7 @@
                                     <span class="text-sm text-gray-600 dark:text-gray-400">On Sale</span>
                                 </label>
                             </div>
-                        </div>
-
-                        {{-- Price Range --}}
-                        <div class="rounded-xl bg-gray-50 p-5 dark:bg-gray-900">
-                            <div class="mb-4 flex items-center justify-between">
-                                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Price Range</h3>
-                            </div>
-                            <div>
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {{ Number::currency($price_range, 'IDR') }}
-                                </span>
-                                <input type="range" wire:model.live="price_range"
-                                    class="mt-2 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                                    min="0" max="50000000" step="100000">
-                                <div class="mt-2 flex justify-between text-xs text-gray-600 dark:text-gray-400">
-                                    <span>{{ Number::currency(0, 'IDR') }}</span>
-                                    <span>{{ Number::currency(50000000, 'IDR') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        
+                        </div>  
                     </div>
                 </div>
 
