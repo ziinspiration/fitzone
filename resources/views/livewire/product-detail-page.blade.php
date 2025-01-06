@@ -45,7 +45,7 @@
                 </div>
 
                 {{-- Product Info Section --}}
-                <div class="w-full lg:w-2/5 flex flex-col">
+                <div class="w-full lg:w-2/5 flex flex-col" x-data="{ selectedSize: null }">
                     {{-- Brand & Name --}}
                     <div class="mb-6">
                         <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
@@ -105,76 +105,38 @@
                             Select Size
                         </label>
                         <div class="flex flex-wrap gap-2">
-                            <button 
-                                type="button" 
+                            @foreach ($sizes as $size)
+                            <button
+                                type="button"
                                 class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white': selectedSize === '36' }"
-                                @click="selectedSize = '36'">
-                                36
+                                :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white border-primary-700 dark:border-primary-600 ring-2 ring-primary-700 dark:ring-primary-600': selectedSize === '{{ $size->size }}' }"
+                                @click="selectedSize = '{{ $size->size }}'">
+                                {{ $size->size }}
                             </button>
-                            <button 
-                                type="button" 
-                                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white': selectedSize === '37' }"
-                                @click="selectedSize = '37'">
-                                37
-                            </button>
-                            <button 
-                                type="button" 
-                                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white': selectedSize === '38' }"
-                                @click="selectedSize = '38'">
-                                38
-                            </button>
-                            <button 
-                                type="button" 
-                                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white': selectedSize === '39' }"
-                                @click="selectedSize = '39'">
-                                39
-                            </button>
-                            <button 
-                                type="button" 
-                                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white': selectedSize === '40' }"
-                                @click="selectedSize = '40'">
-                                40
-                            </button>
-                            <button 
-                                type="button" 
-                                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white': selectedSize === '41' }"
-                                @click="selectedSize = '41'">
-                                41
-                            </button>
-                            <button 
-                                type="button" 
-                                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white': selectedSize === '42' }"
-                                @click="selectedSize = '42'">
-                                42
-                            </button>
+                            @endforeach
                         </div>
                     </div>
-                    
 
-
-                    {{-- Add to Cart --}}
-                    <button wire:click="addToCart({{ $product->id }})"
-                        @if (!auth()->check())
-                            wire:click.prevent="redirectToLogin"
-                            disabled
-                        @endif
-                        class="w-full bg-primary-700 dark:bg-white text-white dark:text-black font-medium py-4 rounded-xl hover:bg-primary-900 dark:hover:bg-gray-100 transition-colors">
-                    <span wire:loading.remove>Add to Cart</span>
-                    <span wire:loading>
-                        <svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </span>
-                </button>
-
+                     {{-- Add to Cart --}}
+                        <button
+                            @auth
+                                wire:click="addToCart({{ $product->id }}, selectedSize)"
+                            @else
+                                wire:click="showLoginAlert"
+                            @endauth
+                            class="w-full bg-primary-700 dark:bg-white text-white dark:text-black font-medium py-4 rounded-xl hover:bg-primary-900 dark:hover:bg-gray-100 transition-colors">
+                                @auth
+                                    <span wire:loading.remove>Add to Cart</span>
+                                    <span wire:loading>
+                                        <svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    </span>
+                                @else
+                                    <span>Add to Cart</span>
+                                @endauth
+                        </button>
 
                     {{-- Shipping Info --}}
                     <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
@@ -260,48 +222,48 @@
                                 The product matches the description, and the shipping was fast. Highly recommended seller!
                             </p>
 
-                            
+
                             <div x-data="{ isPreviewOpen: false, previewImage: '' }">
                                 <div class="flex gap-2 mb-4">
                                     <!-- Thumbnail Images -->
-                                    <img 
-                                        src="https://www.adidas.co.id/media/catalog/product/i/f/if3502_6_footwear_photography_front20lateral20top20view_grey.jpg" 
-                                        class="w-20 h-20 rounded-md object-cover cursor-pointer" 
+                                    <img
+                                        src="https://www.adidas.co.id/media/catalog/product/i/f/if3502_6_footwear_photography_front20lateral20top20view_grey.jpg"
+                                        class="w-20 h-20 rounded-md object-cover cursor-pointer"
                                         alt="Review Image"
                                         @click="isPreviewOpen = true; previewImage = $event.target.src"
                                     >
-                                    <img 
-                                        src="https://www.adidas.co.id/media/catalog/product/i/f/if3502_2_footwear_photography_side20lateral20view_grey.jpg" 
-                                        class="w-20 h-20 rounded-md object-cover cursor-pointer" 
+                                    <img
+                                        src="https://www.adidas.co.id/media/catalog/product/i/f/if3502_2_footwear_photography_side20lateral20view_grey.jpg"
+                                        class="w-20 h-20 rounded-md object-cover cursor-pointer"
                                         alt="Review Image"
                                         @click="isPreviewOpen = true; previewImage = $event.target.src"
                                     >
                                 </div>
-                            
+
                                 <!-- Modal for Image Preview -->
-                                <div 
-                                    x-show="isPreviewOpen" 
+                                <div
+                                    x-show="isPreviewOpen"
                                     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50"
                                     x-cloak
                                 >
                                     <div class="relative">
                                         <!-- Close Button -->
-                                        <button 
-                                            class="absolute top-2 right-2 text-dark text-xl" 
+                                        <button
+                                            class="absolute top-2 right-2 text-dark text-xl"
                                             @click="isPreviewOpen = false"
                                         >
-                                            &times;
+                                            ×
                                         </button>
                                         <!-- Full Image -->
-                                        <img 
-                                            :src="previewImage" 
+                                        <img
+                                            :src="previewImage"
                                             class="max-w-full max-h-[90vh] rounded-md"
                                             alt="Full Preview"
                                         >
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="flex items-center gap-4 text-gray-600 dark:text-gray-400 text-sm">
                                 <button class="flex items-center gap-1 hover:text-gray-900 dark:hover:text-white">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
