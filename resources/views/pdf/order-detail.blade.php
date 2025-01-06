@@ -120,15 +120,15 @@
         <div class="info-grid">
             <div class="info-card">
                 <h3>Order Details</h3>
-                <p><strong>Customer:</strong> {{ auth()->user()->full_name }}</p>
+                <p style="text-transform: capitalize"><strong>Customer:</strong> {{ auth()->user()->full_name }}</p>
                 <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($order->created_at)->format('d M Y H:i:s') }}</p>
-                <p><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
+                <p style="text-transform: capitalize"><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
             </div>
             <div class="info-card">
                 <h3>Payment Information</h3>
-                <p><strong>Method:</strong> {{ str_replace('_', ' ', $order->payment_method) }}</p>
-                <p><strong>Status:</strong> {{ ucfirst($order->payment_status) }}</p>
-                <p><strong>Shipping:</strong> {{ str_replace('_', ' ', $order->shipping_service) }}</p>
+                <p><strong>Method:</strong> <span style="text-transform: uppercase">{{ str_replace('_', ' ', $order->payment_method) }}</span></p>
+                <p style="text-transform: capitalize"><strong>Status:</strong> {{ ucfirst($order->payment_status) }}</p>
+                <p><strong>Shipping:</strong> <span style="text-transform: uppercase">{{ str_replace('_', ' ', $order->shipping_service) }}</span></p>
             </div>
         </div>
 
@@ -137,6 +137,7 @@
             <thead>
                 <tr>
                     <th>Product</th>
+                    <th>Size</th>
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Total</th>
@@ -146,6 +147,7 @@
                 @foreach ($order->orderItems as $item)
                 <tr>
                     <td>{{ $item->product->name }}</td>
+                    <td>{{ $item->size }}</td>
                     <td>{{ Number::currency($item->unit_price, 'IDR') }}</td>
                     <td>{{ $item->quantity }}</td>
                     <td>{{ Number::currency($item->total_price, 'IDR') }}</td>
@@ -158,11 +160,11 @@
         <div class="info-grid">
             <div class="info-card">
                 <h3>Shipping Address</h3>
-                <p><strong>{{ $address->full_name }}</strong></p>
+                <p style="text-transform: capitalize"><strong>{{ $address->full_name }}</strong></p>
                 <p>{{ $address->phone }}</p>
-                <p>{{ $address->street_address }}</p>
-                <p>{{ $address->district }}, {{ $address->province_name }}</p>
-                <p>{{ $address->city_name }}, {{ $address->postal_code }}</p>
+                <p style="text-transform: capitalize">{{ $address->street_address }}</p>
+                <p style="text-transform: capitalize">{{ $address->district }}, {{ $address->province_name }}</p>
+                <p style="text-transform: capitalize">{{ $address->city_name }}, {{ $address->postal_code }}</p>
             </div>
             <div class="summary-section">
                 <h3>Order Summary</h3>
