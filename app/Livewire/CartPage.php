@@ -5,6 +5,9 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Helpers\CartManagement;
 use Livewire\Attributes\Title;
+use App\Models\Cart;
+use App\Models\Size;
+use Illuminate\Support\Facades\Log;
 
 #[Title('Cartshop - Fitzone')]
 class CartPage extends Component
@@ -14,11 +17,14 @@ class CartPage extends Component
     public $grand_total = 0;
     public $tax_amount = 0;
     public $select_all = false;
+    public $sizes = [];
+
 
     public function mount()
     {
         $this->cart_items = CartManagement::getCartItemsFromDb();
         $this->selected_items = CartManagement::getSelectedItemsFromDb();
+        $this->sizes = Size::all();
 
         if (empty($this->selected_items)) {
             $this->grand_total = 0;
@@ -28,12 +34,12 @@ class CartPage extends Component
         }
     }
 
-    public function selectItem($product_id, $isSelected)
+    public function selectItem($cart_item_id, $isSelected)
     {
         if ($isSelected) {
-            CartManagement::addSelectedItem($product_id);
+            CartManagement::addSelectedItem($cart_item_id);
         } else {
-            CartManagement::removeSelectedItem($product_id);
+            CartManagement::removeSelectedItem($cart_item_id);
         }
 
         $this->selected_items = CartManagement::getSelectedItemsFromDb();
@@ -46,11 +52,11 @@ class CartPage extends Component
 
         if ($this->select_all) {
             foreach ($this->cart_items as $item) {
-                CartManagement::addSelectedItem($item->product_id);
+                CartManagement::addSelectedItem($item->id);
             }
         } else {
             foreach ($this->cart_items as $item) {
-                CartManagement::removeSelectedItem($item->product_id);
+                CartManagement::removeSelectedItem($item->id);
             }
         }
 
@@ -58,21 +64,33 @@ class CartPage extends Component
         $this->updateTotal();
     }
 
-    public function increaseQty($product_id)
+    public function updateSize($cart_item_id, $new_size)
     {
-        $this->cart_items = CartManagement::incrementQuantity($product_id);
-        $this->updateItemTotal($product_id);
+        if (CartManagement::updateItemSize($cart_item_id, $new_size)) {
+            $this->cart_items = CartManagement::getCartItemsFromDb();
+            $this->updateTotal();
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => 'Size updated successfully!'
+            ]);
+        }
     }
 
-    public function decreaseQty($product_id)
+    public function increaseQty($cart_item_id)
     {
-        $this->cart_items = CartManagement::decrementQuantity($product_id);
-        $this->updateItemTotal($product_id);
+        $this->cart_items = CartManagement::incrementQuantity($cart_item_id);
+        $this->updateItemTotal($cart_item_id);
     }
 
-    public function removeItem($product_id)
+    public function decreaseQty($cart_item_id)
     {
-        $this->cart_items = CartManagement::removeCartItem($product_id);
+        $this->cart_items = CartManagement::decrementQuantity($cart_item_id);
+        $this->updateItemTotal($cart_item_id);
+    }
+
+    public function removeItem($cart_item_id)
+    {
+        $this->cart_items = CartManagement::removeCartItem($cart_item_id);
         $this->selected_items = CartManagement::getSelectedItemsFromDb();
 
         if (empty($this->selected_items)) {
@@ -83,9 +101,9 @@ class CartPage extends Component
         }
     }
 
-    private function updateItemTotal($product_id)
+    private function updateItemTotal($cart_item_id)
     {
-        $item = collect($this->cart_items)->firstWhere('product_id', $product_id);
+        $item = collect($this->cart_items)->firstWhere('id', $cart_item_id);
         if ($item) {
             $item->total_price = $item->quantity * $item->unit_price;
         }
@@ -101,12 +119,13 @@ class CartPage extends Component
         }
 
         $selected_items_data = collect($this->cart_items)->filter(function ($item) {
-            return in_array($item->product_id, $this->selected_items);
+            return in_array($item->id, $this->selected_items);
         });
 
         $this->grand_total = $selected_items_data->sum('total_price');
         $this->tax_amount = $this->grand_total * 0.1;
     }
+
 
     public function proceedToCheckout()
     {
@@ -120,6 +139,8 @@ class CartPage extends Component
 
     public function render()
     {
-        return view('livewire.cart-page');
+        return view('livewire.cart-page', [
+            'sizes' => $this->sizes,
+        ]);
     }
 }
