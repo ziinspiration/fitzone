@@ -14,7 +14,6 @@ use App\Services\RajaOngkirService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
-
 #[Title('Checkout - Fitzone')]
 class CheckoutPage extends Component
 {
@@ -192,17 +191,24 @@ class CheckoutPage extends Component
         }
 
         try {
-            $rajaOngkir = new RajaOngKirService();
+            $rajaOngkir = new RajaOngkirService();
 
             $total_weight = 0;
+
             if (!empty($this->cart_items)) {
                 $total_weight = collect($this->cart_items)->sum(function ($item) {
-                    return $item['quantity'] * ($item['product']['weight'] ?? 1000);
+                    $weightPerItem = $item['product']['weight'] ?? 1000;
+                    return $item['quantity'] * $weightPerItem;
                 });
             } else {
                 Log::error('Cart is empty or invalid', ['cart_items' => $this->cart_items]);
                 return;
             }
+
+            Log::info('Total Weight:', ['weight' => $total_weight]);
+
+            $rounded_weight = round($total_weight);
+            Log::info('Rounded Weight:', ['weight' => $rounded_weight]);
 
             $couriers = ['jne', 'pos'];
             $this->shipping_rates = [];
@@ -211,7 +217,7 @@ class CheckoutPage extends Component
                 $rates = $rajaOngkir->getShippingCost(
                     origin: '23',
                     destination: $this->city_id,
-                    weight: $total_weight,
+                    weight: $rounded_weight,
                     courier: $courier
                 );
 
@@ -231,7 +237,6 @@ class CheckoutPage extends Component
             session()->flash('error', 'Failed to calculate shipping cost');
         }
     }
-
     protected function calculateTotals()
     {
         $this->grand_total = $this->subtotal + $this->tax_amount + $this->shipping_cost;
@@ -269,22 +274,26 @@ class CheckoutPage extends Component
                 'shipping_cost' => $this->shipping_cost,
                 'shipping_service' => $this->selected_service,
                 'total_amount' => $this->grand_total,
-                'status' => 'Pending'
+                'status' => 'Pending',
             ]);
+
+            $midtrans = new MidtransService();
+            $snapToken = $midtrans->createTransaction($order);
+
+            $order->payment_token = $snapToken;
+            $order->save();
 
             foreach ($this->cart_items as $item) {
                 $total_price = $item['quantity'] * $item['product']['price'];
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['product_id'],
+                    'size' => $item['size'],
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['product']['price'],
                     'total_price' => $total_price,
                 ]);
             }
-
-            $midtrans = new MidtransService();
-            $snapToken = $midtrans->createTransaction($order);
 
             $this->snap_token = (string) $snapToken;
 
@@ -298,7 +307,6 @@ class CheckoutPage extends Component
             throw $e;
         }
     }
-
 
     public function render()
     {

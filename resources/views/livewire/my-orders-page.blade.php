@@ -43,7 +43,7 @@
                             <td class="py-4 text-sm text-gray-900">{{ $order->order_number }}</td>
                             <td class="py-4 text-sm text-gray-900">
                                 @foreach($order->orderItems as $orderItem)
-                                    <div>{{ $orderItem->product->name }}</div>
+                                    <div>{{ $orderItem->product->name }} ( {{ $orderItem->size }} )</div>
                                 @endforeach
                             </td>
                             <td class="py-4 text-sm text-gray-600">{{ $order->created_at->format('d-m-Y') }}</td>

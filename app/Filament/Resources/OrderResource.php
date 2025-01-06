@@ -110,6 +110,13 @@ class OrderResource extends Resource
                                     ->dehydrated()
                                     ->columnSpan(3),
 
+                                TextInput::make('size')
+                                    ->numeric()
+                                    ->required()
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->columnSpan(3),
+
                                 TextInput::make('quantity')
                                     ->numeric()
                                     ->required()
@@ -186,7 +193,7 @@ class OrderResource extends Resource
                                 return 'Total = ' . $formatter->formatCurrency($totalAmount, 'IDR');
                             })
                             ->columnSpan(6)
-                            ->extraAttributes(['style' => 'font-size: 1.25rem; font-weight: bold;']), // Larger font size for "Total"
+                            ->extraAttributes(['style' => 'font-size: 1.25rem; font-weight: bold;']),
 
                         // Hidden Total Amount
                         Hidden::make('total_amount')

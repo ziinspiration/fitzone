@@ -18,7 +18,7 @@
                 </svg>
                 <span class="text-sm font-medium text-gray-600">Customer Account</span>
             </div>
-            <div class="text-sm text-gray-900">{{ auth()->user()->full_name }}</div>
+            <div class="text-sm text-gray-900 capitalize">{{ auth()->user()->full_name }}</div>
         </div>
 
         <!-- Order Date Card -->
@@ -131,6 +131,7 @@
                             <tr class="border-b border-gray-200 text-center">
                                 <th class="text-center py-4 text-sm font-medium text-gray-700">Product</th>
                                 <th class="text-center py-4 text-sm font-medium text-gray-700">Name</th>
+                                <th class="text-center py-4 text-sm font-medium text-gray-700">Size</th>
                                 <th class="text-center py-4 text-sm font-medium text-gray-700">Price</th>
                                 <th class="text-center py-4 text-sm font-medium text-gray-700">Quantity</th>
                                 <th class="text-center py-4 text-sm font-medium text-gray-700">Subtotal</th>
@@ -145,6 +146,7 @@
                                     </div>
                                 </td>
                                 <td class="py-4 text-sm text-gray-600">{{ $item->product->name }}</td>
+                                <td class="py-4 text-sm text-gray-600">{{ $item->size }}</td>
                                 <td class="py-4 text-sm text-gray-600">{{ Number::currency($item->unit_price ?? 0, 'IDR') }}</td>
                                 <td class="py-4 text-sm text-gray-600">{{ $item->quantity }}</td>
                                 <td class="py-4 text-sm text-gray-900">{{ Number::currency($item->total_price ?? 0, 'IDR') }}</td>
@@ -160,13 +162,12 @@
                 <h3 class="text-lg font-semibold mb-2">Shipping Address</h3>
                 <div class="flex flex-col md:flex-row justify-between text-sm font-medium mb-2">
                     <div class="text-gray-600">
-                        <p>{{ $address->full_name }} ( {{ $address->phone }} )</p>
-                        <p></p>
+                        <p class="capitalize">{{ $address->full_name }} ( {{ $address->phone }} )</p>
                     </div>
                 </div>
                 <div class="flex flex-col md:flex-row justify-between text-sm font-medium">
                     <div class="text-gray-600">
-                        <p>{{ $address->street_address }} {{ $address->district }}, {{ $address->province_name }}, {{ $address->city_name }}, {{ $address->postal_code }}</p>
+                        <p class="capitalize">{{ $address->street_address }}, {{ $address->district }}, {{ $address->city_name }},  {{ $address->province_name }}, {{ $address->postal_code }}</p>
                     </div>
                 </div>
             </div>

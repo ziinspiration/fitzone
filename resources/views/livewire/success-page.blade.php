@@ -11,8 +11,8 @@
                   <p class="text-lg font-semibold leading-4 text-left text-gray-800 dark:text-gray-400">
                     {{ $order->address->full_name }}</p>
                   <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">{{ $order->address->street_address }}</p>
-                  <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">{{ $order->address->city }}, {{ $order->address->state }} {{ $order->address->zip_code }}</p>
-                  <p class="text-sm leading-4 cursor-pointer dark:text-gray-400">Phone: {{ $order->address->phone }}</p>
+                  <p class="text-sm leading-4 text-gray-600 dark:text-gray-400">{{ $order->address->district }}, {{ $order->address->city_name }}, {{ $order->address->province_name }}, {{ $order->address->postal_code }}</p>
+                  <p class="text-sm leading-4 cursor-pointer dark:text-gray-400">Phone : {{ $order->address->phone }}</p>
                 </div>
               </div>
             </div>
