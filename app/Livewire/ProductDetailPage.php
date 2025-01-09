@@ -18,9 +18,10 @@ class ProductDetailPage extends Component
     use LivewireAlert;
     public $slug;
     public $quantity = 1;
-    public $selectedSize;
     public $product;
     public $newArrivals;
+    public $selectedSizeFromAlpine;
+
 
     public function mount($slug)
     {
@@ -56,14 +57,18 @@ class ProductDetailPage extends Component
         $this->dispatch('openModal', component: 'auth.login-modal');
     }
 
-    #[On('addToCart')]
+
+    #[On('size-selected')]
+    public function updateSelectedSize($size)
+    {
+        $this->selectedSizeFromAlpine = $size;
+    }
+
+
+
     public function addToCart($productId, $selectedSize)
     {
-        Log::info('addToCart called:', [
-            'product_id' => $productId,
-            'quantity' => $this->quantity,
-            'selectedSize' => $selectedSize,
-        ]);
+        Log::info('addToCart values', ['productId' => $productId, 'selectedSize' => $selectedSize]);
 
         if ($this->quantity <= 0) {
             $this->alert('error', 'Quantity must be greater than zero!', [
@@ -84,7 +89,7 @@ class ProductDetailPage extends Component
         }
 
         $total_count = CartManagement::addItemToCart($productId, $this->quantity, $selectedSize);
-
+        Log::info('dispatch-update-cart-count', ['total_count' => $total_count]);
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
 
         if ($total_count > 0) {
@@ -101,7 +106,6 @@ class ProductDetailPage extends Component
             ]);
         }
     }
-
 
     public function decreaseQty()
     {

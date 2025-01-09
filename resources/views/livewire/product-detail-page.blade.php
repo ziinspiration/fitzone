@@ -1,6 +1,6 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+<div class="min-h-screen bg-white  bg-gray-50 dark:bg-gray-900">
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mt-10">
+        <div class="bg-white dark:bg-gray-800  overflow-hidden mt-10">
             <div class="flex flex-col lg:flex-row gap-8 p-6">
                 {{-- Image Gallery Section --}}
                 <div class="w-full lg:w-3/5" x-data="{
@@ -72,14 +72,7 @@
                         </div>
                     </div>
 
-                    {{-- Description --}}
-                    <div class="prose prose-sm dark:prose-invert mb-8 [&>ul]:list-disc [&>ul]:ml-4">
-                        @if ($product->description)
-                            {!! Str::markdown($product->description) !!}
-                        @else
-                            <p class="text-gray-500 dark:text-gray-400">No description available</p>
-                        @endif
-                    </div>
+
 
                     {{-- Quantity Selector --}}
                     <div class="mb-8">
@@ -100,6 +93,7 @@
                         </div>
                     </div>
 
+
                     <div class="mb-8">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                             Select Size
@@ -110,15 +104,17 @@
                                 type="button"
                                 class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                 :class="{ 'bg-primary-700 text-white dark:bg-primary-600 dark:text-white border-primary-700 dark:border-primary-600 ring-2 ring-primary-700 dark:ring-primary-600': selectedSize === '{{ $size->size }}' }"
-                                @click="selectedSize = '{{ $size->size }}'">
+                                @click="selectedSize = '{{ $size->size }}'; $dispatch('size-selected', { size: '{{ $size->size }}' })">
                                 {{ $size->size }}
                             </button>
                             @endforeach
                         </div>
                     </div>
 
-                     {{-- Add to Cart --}}
-                        <button
+
+
+                    {{-- Add to Cart --}}
+                    <button
                             @auth
                                 wire:click="addToCart({{ $product->id }}, selectedSize)"
                             @else
@@ -151,129 +147,74 @@
                 </div>
             </div>
 
-            {{-- Product Reviews --}}
-            <div class="max-w-6xl mx-auto px-4 mt-8 mb-8">
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
-                    {{-- Reviews Header --}}
-                    <div class="border-b pb-4">
-                        <h2 class="text-xl font-bold text-gray-800 dark:text-white">Product Reviews</h2>
-                        <div class="mt-4 flex items-center gap-6">
-                            {{-- Average Rating --}}
-                            <div class="flex items-center gap-3">
-                                <span class="text-3xl font-bold text-gray-900 dark:text-white">4.9</span>
-                                <div>
-                                    <div class="flex text-yellow-400">
-                                        @for ($i = 0; $i < 5; $i++)
-                                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                            </svg>
-                                        @endfor
-                                    </div>
-                                    <span class="text-sm text-gray-600 dark:text-gray-400">238 reviews</span>
-                                </div>
-                            </div>
-                            {{-- Rating Distribution --}}
-                            <div class="flex-1 space-y-2">
-                                @foreach ([5, 4, 3, 2, 1] as $star)
-                                    <div class="flex items-center gap-2 text-sm">
-                                        <span class="w-6 text-gray-700 dark:text-gray-300">{{ $star }}</span>
-                                        <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                            <div class="h-full bg-primary-700" style="width: {{ $star * 20 }}%;"></div>
-                                        </div>
-                                        <span class="w-8 text-right text-gray-700 dark:text-gray-300">{{ $star * 20 }}%</span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
+            {{-- Description --}}
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                @if ($product->description)
+                    {!! Str::markdown($product->description) !!}
+                @else
+                    <p class="text-gray-500 dark:text-gray-400">No description available</p>
+                @endif
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-10" x-data="{ activeSlide: 0 }">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold">You Might Also Like</h2>
+                    <div class="flex items-center gap-2">
+                        <!-- Tombol navigasi kiri -->
+                        <button @click="$refs.productCarousel.scrollLeft -= $refs.productCarousel.clientWidth"
+                                class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <!-- Tombol navigasi kanan -->
+                        <button @click="$refs.productCarousel.scrollLeft += $refs.productCarousel.clientWidth"
+                                class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
                     </div>
+                </div>
 
-                    {{-- Filter Section --}}
-                    <div class="py-4 border-b">
-                        <div class="flex gap-3">
-                            <button class="px-4 py-2 border rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300">All</button>
-                            <button class="px-4 py-2 border rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300">⭐ 5</button>
-                            <button class="px-4 py-2 border rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300">With Photos</button>
-                        </div>
-                    </div>
-
-                    {{-- Review List --}}
-                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
-                        {{-- Single Review --}}
-                        <div class="py-6">
-                            <div class="flex items-center justify-between mb-2">
-                                {{-- Reviewer Information --}}
-                                <div class="flex items-center gap-3">
-                                    <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" class="w-10 h-10 rounded-full" alt="Reviewer">
-                                    <span class="font-medium text-gray-900 dark:text-white">John D.</span>
-                                </div>
-                                {{-- Rating Stars --}}
-                                <div class="flex text-yellow-400">
-                                    @for ($i = 0; $i < 5; $i++)
-                                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                        </svg>
-                                    @endfor
-                                </div>
-                            </div>
-                            <div class="text-gray-600 dark:text-gray-400 text-sm mb-2">
-                                Dec 12, 2023 | Variation: Black
-                            </div>
-                            <p class="text-gray-900 dark:text-gray-200 mb-4">
-                                The product matches the description, and the shipping was fast. Highly recommended seller!
-                            </p>
-
-
-                            <div x-data="{ isPreviewOpen: false, previewImage: '' }">
-                                <div class="flex gap-2 mb-4">
-                                    <!-- Thumbnail Images -->
-                                    <img
-                                        src="https://www.adidas.co.id/media/catalog/product/i/f/if3502_6_footwear_photography_front20lateral20top20view_grey.jpg"
-                                        class="w-20 h-20 rounded-md object-cover cursor-pointer"
-                                        alt="Review Image"
-                                        @click="isPreviewOpen = true; previewImage = $event.target.src"
-                                    >
-                                    <img
-                                        src="https://www.adidas.co.id/media/catalog/product/i/f/if3502_2_footwear_photography_side20lateral20view_grey.jpg"
-                                        class="w-20 h-20 rounded-md object-cover cursor-pointer"
-                                        alt="Review Image"
-                                        @click="isPreviewOpen = true; previewImage = $event.target.src"
-                                    >
-                                </div>
-
-                                <!-- Modal for Image Preview -->
-                                <div
-                                    x-show="isPreviewOpen"
-                                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50"
-                                    x-cloak
-                                >
-                                    <div class="relative">
-                                        <!-- Close Button -->
-                                        <button
-                                            class="absolute top-2 right-2 text-dark text-xl"
-                                            @click="isPreviewOpen = false"
-                                        >
-                                            ×
-                                        </button>
-                                        <!-- Full Image -->
-                                        <img
-                                            :src="previewImage"
-                                            class="max-w-full max-h-[90vh] rounded-md"
-                                            alt="Full Preview"
-                                        >
+                <!-- Product Carousel -->
+                <div class="relative overflow-hidden">
+                    <div x-ref="productCarousel"
+                         class="flex gap-6 overflow-x-hidden snap-x snap-mandatory scroll-smooth">
+                        @foreach($newArrivals as $newProduct)
+                            <div wire:key="{{ $newProduct->id }}"
+                                 class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
+                                <a href="/products/{{ $newProduct->slug }}">
+                                    <div class="relative pb-[100%] mb-4 overflow-hidden rounded-xl">
+                                        <img src="{{ isset($newProduct->images[0]) ? url('storage', $newProduct->images[0]) : url('images/default-product.jpg') }}"
+                                            alt="{{ $newProduct->name }}"
+                                            class="absolute inset-0 w-full h-full object-cover">
                                     </div>
-                                </div>
-                            </div>
+                                    <div class="h-14 mb-1">
+                                        <h3 class="font-medium line-clamp-2 text-[length:var(--dynamic-font-size,1.125rem)]"
+                                            x-data
+                                            x-init="
+                                                const text = $el.textContent;
+                                                const length = text.length;
+                                                if (length > 50) {
+                                                    $el.style.setProperty('--dynamic-font-size', '0.875rem');
+                                                } else if (length > 30) {
+                                                    $el.style.setProperty('--dynamic-font-size', '1rem');
+                                                }
+                                            ">
+                                            {{ $newProduct->name }}
+                                        </h3>
+                                    </div>
 
-                            <div class="flex items-center gap-4 text-gray-600 dark:text-gray-400 text-sm">
-                                <button class="flex items-center gap-1 hover:text-gray-900 dark:hover:text-white">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
-                                    </svg>
-                                    Helpful
-                                </button>
+                                    <div class="h-6">
+                                        <p class="text-gray-600 text-sm mb-2 truncate">{{ $newProduct->category->name }}</p>
+                                    </div>
+
+                                    <p class="font-medium">{{ Number::currency($newProduct->price, 'IDR') }}</p>
+                                </a>
                             </div>
-                        </div>
-                        {{-- Repeat Review Item as Needed --}}
+                        @endforeach
                     </div>
                 </div>
             </div>
