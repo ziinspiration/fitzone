@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 mt-10">
-    <div class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 lg:px-8 ">
-        <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-gray-800 mt-10">
-            <h1 class="text-5xl font-bold dark:text-gray-200 mb-5"> Browse Product with <span class="text-primary-700">FitZone</span></h1>
+<div class="min-h-screen bg-white">
+    <div class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 lg:px-8">
+        <div class="rounded-2xl bg-white p-6">
+            <h1 class="text-5xl font-bold text-gray-900 mb-5 mt-10">Browse Product with <span class="text-primary-700">FitZone</span></h1>
             <div class="flex flex-col gap-8 lg:flex-row">
                 {{-- Filters Sidebar --}}
                 <div class="lg:w-1/4">
@@ -140,10 +140,10 @@
                         </div>
                     @else
                         {{-- Your existing products grid code --}}
-                        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                             @foreach ($products as $product)
                             <div wire:key="{{ $product->id }}" class="group">
-                                <div class="overflow-hidden rounded-2xl bg-white shadow-lg transition-shadow hover:shadow-xl dark:bg-gray-800">
+                                <div class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow hover:shadow-xl dark:bg-gray-800">
                                     {{-- Image Container --}}
                                     <div class="relative aspect-square">
                                         <img src="{{ !empty($product->images) ? url('storage', $product->images[0]) : url('path/to/default/image.jpg') }}"
@@ -184,10 +184,11 @@
 
                                     {{-- Content --}}
                                     <div class="p-4">
-                                        <h3 class="mb-2 text-lg font-medium text-gray-900 dark:text-white">
+                                        <h2 class="font-medium">
                                             {{ $product->name }}
-                                        </h3>
-                                        <div class="mb-4 text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                                        </h2>
+                                        <p class="text-gray-600 text-sm mb-2">{{ $product->category->name }}</p>
+                                        <div class="font-medium mb-4">
                                             {{ Number::currency($product->price, 'IDR') }}
                                         </div>
                                          <button

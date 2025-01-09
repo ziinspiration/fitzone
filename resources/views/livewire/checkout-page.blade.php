@@ -5,7 +5,7 @@
     <form wire:submit.prevent='placeOrder'>
         <div class="grid grid-cols-12 gap-4">
             <div class="md:col-span-12 lg:col-span-8 col-span-12">
-                <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-800">
+                <div class="bg-white rounded-xl shadow-2xl p-4 sm:p-7 dark:bg-slate-800">
                     <div class="space-y-5">
                         <div class="grid grid-cols-2 gap-6">
                             <div>
@@ -123,7 +123,7 @@
                    </div>
 
                    <div class="md:col-span-12 lg:col-span-4 col-span-12">
-                       <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
+                       <div class="bg-white rounded-xl  p-4 sm:p-7 dark:bg-slate-900">
                            <div class="text-xl font-bold text-gray-700 dark:text-white mb-4">
                                Order Summary
                            </div>
