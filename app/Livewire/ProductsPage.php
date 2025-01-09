@@ -55,6 +55,16 @@ class ProductsPage extends Component
         ]);
     }
 
+    public function showLoginAlert()
+    {
+        $this->alert('warning', 'Please log in first to add items to your basket', [
+            'position' => 'bottom-end',
+            'timer' => 3000,
+            'toast' => true,
+        ]);
+        $this->dispatch('openModal', component: 'auth.login-modal');
+    }
+
     public function render()
     {
         $productQuery = Product::query()->where('is_active', 1);

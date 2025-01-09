@@ -28,6 +28,24 @@ class Order extends Model
         'paid_at'
     ];
 
+    protected $appends = ['is_paid', 'is_unpaid'];
+
+    public function getIsPaidAttribute()
+    {
+        return !is_null($this->paid_at);
+    }
+
+    public function getIsUnpaidAttribute()
+    {
+        return is_null($this->paid_at);
+    }
+
+    protected $dates = [
+        'paid_at',
+        'created_at',
+        'updated_at'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

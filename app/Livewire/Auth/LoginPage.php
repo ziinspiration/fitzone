@@ -77,7 +77,12 @@ class LoginPage extends Component
             }
 
             session()->flash('success', 'You have successfully logged in!');
-            return redirect()->intended('/');
+
+            if ($user->role_id == 1) {
+                return redirect()->intended('/admin');
+            } else {
+                return redirect()->intended('/');
+            }
         }
 
         session()->flash('error', 'Invalid email or password.');

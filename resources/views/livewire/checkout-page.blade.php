@@ -178,6 +178,9 @@
                                     <p class="text-sm text-gray-500 truncate dark:text-gray-400">
                                         {{ $ci['quantity'] }} X
                                     </p>
+                                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                        Size : {{ $ci['size'] }}
+                                    </p>
                                 </div>
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                     Rp {{ number_format($ci['total_price'], 2) }}
