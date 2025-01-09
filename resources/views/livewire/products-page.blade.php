@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-white">
-    <div class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 lg:px-8">
-        <div class="rounded-2xl bg-white p-6">
-            <h1 class="text-5xl font-bold text-gray-900 mb-5 mt-10">Browse Product with <span class="text-primary-700">FitZone</span></h1>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 mt-10">
+    <div class="mx-auto max-w-[90rem] px-4 py-8 sm:px-6 lg:px-8 ">
+        <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-gray-800 mt-10">
+            <h1 class="text-5xl font-bold dark:text-gray-200 mb-5"> Browse Product with <span class="text-primary-700">FitZone</span></h1>
             <div class="flex flex-col gap-8 lg:flex-row">
                 {{-- Filters Sidebar --}}
                 <div class="lg:w-1/4">
@@ -140,15 +140,15 @@
                         </div>
                     @else
                         {{-- Your existing products grid code --}}
-                        <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             @foreach ($products as $product)
                             <div wire:key="{{ $product->id }}" class="group">
-                                <div class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow hover:shadow-xl dark:bg-gray-800">
+                                <div class="overflow-hidden rounded-2xl bg-white shadow-lg transition-shadow hover:shadow-xl dark:bg-gray-800">
                                     {{-- Image Container --}}
-                                    <div class="relative aspect-square">
+                                    <div class="relative pb-[100%]">
                                         <img src="{{ !empty($product->images) ? url('storage', $product->images[0]) : url('path/to/default/image.jpg') }}"
                                             alt="{{ $product->name }}"
-                                            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
+                                            class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
 
                                         {{-- Badges --}}
                                         @if($product->featured)
@@ -173,29 +173,34 @@
                                                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                             </a>
-                                            {{-- <button class="rounded-full bg-white p-2 text-gray-900 transition-transform hover:scale-110 dark:bg-gray-800 dark:text-white">
-                                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                                </svg>
-                                            </button> --}}
                                         </div>
                                     </div>
 
                                     {{-- Content --}}
                                     <div class="p-4">
-                                        <h2 class="font-medium">
-                                            {{ $product->name }}
-                                        </h2>
-                                        <p class="text-gray-600 text-sm mb-2">{{ $product->category->name }}</p>
-                                        <div class="font-medium mb-4">
+                                        <div class="h-14 mb-2"> <!-- Fixed height container for title -->
+                                            <h3 class="font-medium text-gray-900 dark:text-white line-clamp-2 text-[length:var(--dynamic-font-size,1.125rem)]"
+                                                x-data
+                                                x-init="
+                                                    const text = $el.textContent;
+                                                    const length = text.length;
+                                                    if (length > 50) {
+                                                        $el.style.setProperty('--dynamic-font-size', '0.875rem');
+                                                    } else if (length > 30) {
+                                                        $el.style.setProperty('--dynamic-font-size', '1rem');
+                                                    }
+                                                ">
+                                                {{ $product->name }}
+                                            </h3>
+                                        </div>
+                                        <div class="mb-4 text-xl font-bold text-emerald-600 dark:text-emerald-400">
                                             {{ Number::currency($product->price, 'IDR') }}
                                         </div>
-                                         <button
+                                        <button
                                             @auth
                                                 wire:click="addToCart({{ $product->id }})"
                                             @else
-                                                 wire:click="showLoginAlert"
+                                                wire:click="showLoginAlert"
                                             @endauth
                                                 class="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600">
                                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -203,18 +208,17 @@
                                                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                             </svg>
                                             @auth
-                                                 <span wire:loading.remove wire:target="addToCart({{ $product->id }})">
+                                                <span wire:loading.remove wire:target="addToCart({{ $product->id }})">
                                                     Add to Cart
                                                 </span>
                                                 <span wire:loading wire:target="addToCart({{ $product->id }})">
                                                     Adding...
                                                 </span>
                                             @else
-                                                 <span>
+                                                <span>
                                                     Add to Cart
                                                 </span>
                                             @endauth
-
                                         </button>
                                     </div>
                                 </div>

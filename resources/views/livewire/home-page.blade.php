@@ -72,9 +72,9 @@
         <div class="space-y-8">
             <!-- Full Width Image -->
             <div class="aspect-[16/9] w-full">
-                <img 
-                    src="https://static.nike.com/a/images/f_auto/dpr_1.1,cs_srgb/h_2175,c_limit/7c6be620-7bd5-490f-8efa-c29b89d8a97d/nike-just-do-it.jpg" 
-                    alt="Air Jordan 4RM showcase with lifestyle and product shots" 
+                <img
+                    src="https://static.nike.com/a/images/f_auto/dpr_1.1,cs_srgb/h_2175,c_limit/7c6be620-7bd5-490f-8efa-c29b89d8a97d/nike-just-do-it.jpg"
+                    alt="Air Jordan 4RM showcase with lifestyle and product shots"
                     class="w-full h-full object-cover"
                 >
             </div>
@@ -84,7 +84,7 @@
                 <p class="text-sm font-medium">Men's Air Jordan 4RM</p>
                 <h1 class="text-6xl font-black tracking-tight">RIDE EASY</h1>
                 <p class="text-lg">A new take on the iconic style, the 4RM puts bold colour blocking in a comfortable low profile.</p>
-                
+
                 <!-- Shop Button -->
                 <div class="pt-4">
                     <a href="#" class="inline-block bg-black text-white px-8 py-2 rounded-full hover:bg-gray-800 transition-colors">
@@ -96,8 +96,8 @@
     </main>
 
 
-    
-    
+
+
     <!-- Brand Logos Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-10" x-data="{ activeSlide: 0 }">
         <!-- Section Header -->
@@ -122,9 +122,9 @@
         <div class="relative overflow-hidden">
             <div x-ref="productCarousel" class="flex gap-20 overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth">
                 @foreach ($brands as $brand)
-                    <a href="/products?selected_brands[0]={{ $brand->id }}" 
+                    <a href="/products?selected_brands[0]={{ $brand->id }}"
                     class="w-32 h-32 flex-shrink-0 flex items-center justify-center group transition-transform duration-300 hover:-translate-y-1">
-                        <img src="{{ url('storage', $brand->image) }}" 
+                        <img src="{{ url('storage', $brand->image) }}"
                             alt="{{ $brand->name }}"
                             class="w-32 h-auto object-contain opacity-60 transition-opacity duration-300 group-hover:opacity-100">
                     </a>
@@ -134,7 +134,7 @@
     </div>
     <!-- End Brand Logos Section -->
 
-        
+
 
     {{-- New Arrival --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-10" x-data="{ activeSlide: 0 }">
@@ -142,35 +142,53 @@
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold">New Arrivals</h2>
             <div class="flex items-center gap-2">
-                <button @click="$refs.productCarousel.scrollLeft -= $refs.productCarousel.clientWidth" class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
+                <button @click="$refs.productCarousel.scrollLeft -= $refs.productCarousel.clientWidth"
+                        class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
-                <button @click="$refs.productCarousel.scrollLeft += $refs.productCarousel.clientWidth" class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
+                <button @click="$refs.productCarousel.scrollLeft += $refs.productCarousel.clientWidth"
+                        class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
             </div>
         </div>
-    
+
         <!-- Product Carousel -->
         <div class="relative overflow-hidden">
-            <div x-ref="productCarousel" 
+            <div x-ref="productCarousel"
                  class="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth">
-                <!-- Product Card 1 -->
-                @foreach ($products as $product)
-                <div wire:key="{{ $product->id }}" class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
-                    <a href="/products/{{ $product->slug }}">
-                        <div class="aspect-w-4 aspect-h-4 mb-4">
-                            <img src="{{ url('storage', $product->images) }}" 
-                                 alt="{{ $product->name }}"
-                                 class="w-full h-full object-cover ">
+                @foreach ($newArrivalProducts as $na)
+                <div wire:key="{{ $na->id }}"
+                     class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
+                    <a href="/products/{{ $na->slug }}">
+                        <div class="relative mb-4 pb-[100%]">
+                            <img src="{{ url('storage', $na->images) }}"
+                                 alt="{{ $na->name }}"
+                                 class="absolute inset-0 w-full h-full object-cover">
                         </div>
-                        <h3 class="font-medium">{{ $product->name }}</h3>
-                        <p class="text-gray-600 text-sm mb-2">{{ $product->category->name }}</p>
-                        <p class="font-medium">{{ Number::currency($product->price, 'IDR') }}</p>
+                        <div class="h-14 mb-1">
+                            <h3 class="font-medium line-clamp-2 text-[length:var(--dynamic-font-size,1.125rem)]"
+                                x-data
+                                x-init="
+                                    const text = $el.textContent;
+                                    const length = text.length;
+                                    if (length > 50) {
+                                        $el.style.setProperty('--dynamic-font-size', '0.875rem');
+                                    } else if (length > 30) {
+                                        $el.style.setProperty('--dynamic-font-size', '1rem');
+                                    }
+                                ">
+                                {{ $na->name }}
+                            </h3>
+                        </div>
+                        <div class="h-6">
+                            <p class="text-gray-600 text-sm mb-2 truncate">{{ $na->category->name }}</p>
+                        </div>
+                        <p class="font-medium">{{ Number::currency($na->price, 'IDR') }}</p>
                     </a>
                 </div>
                 @endforeach
@@ -180,73 +198,47 @@
     {{-- End New Arrival --}}
 
 
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-10">
-        <!-- Category Showcase -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-            <!-- Men's Category -->
             <div class="relative overflow-hidden group">
                 <div class="aspect-w-16 aspect-h-9">
-                    <img src="https://www.adidas.co.id/media/scandiweb/slider/n/a/nav-men-d_tcm207-819364_2.jpg" alt="Men's Category" class="object-cover w-full h-full">
+                    <img src="https://www.adidas.co.id/media/scandiweb/slider/n/a/nav-men-d_tcm207-819364_2.jpg"
+                         alt="Men's Category" class="object-cover w-full h-full">
                 </div>
             </div>
-    
-            <!-- Kids Category -->
+
             <div class="relative overflow-hidden group">
                 <div class="aspect-w-16 aspect-h-9">
-                    <img src="https://www.adidas.co.id/media/scandiweb/slider/n/a/nav-kids-d_tcm207-819367_2.jpg" alt="Kids Category" class="object-cover w-full h-full">
+                    <img src="https://www.adidas.co.id/media/scandiweb/slider/n/a/nav-kids-d_tcm207-819367_2.jpg"
+                         alt="Kids Category" class="object-cover w-full h-full">
                 </div>
             </div>
-    
-            <!-- Women's Category -->
+
             <div class="relative overflow-hidden group">
                 <div class="aspect-w-16 aspect-h-9">
-                    <img src="https://www.adidas.co.id/media/scandiweb/slider/n/a/nav-women-d_tcm207-819363_2.jpg" alt="Women's Category" class="object-cover w-full h-full">
+                    <img src="https://www.adidas.co.id/media/scandiweb/slider/n/a/nav-women-d_tcm207-819363_2.jpg"
+                         alt="Women's Category" class="object-cover w-full h-full">
                 </div>
             </div>
         </div>
-    
-        <!-- Product Showcase -->
+
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <!-- Superstar -->
-            <div class="group">
-                <div class="mb-2">
-                    <img src="https://www.adidas.co.id/media/scandiweb/slider/s/u/superstar_1.jpg" 
-                        alt="Superstar" 
-                        class="w-full hover:scale-105 transition-transform duration-300">
+            @forelse ($showcaseProducts as $sp)
+                <div wire:key="{{ $sp->id }}" class="group">
+                    <a href="/products/{{ $sp->slug }}">
+                        <div class="mb-2 w-full h-32 overflow-hidden">
+                            <img src="{{ isset($sp->images[0]) ? url('storage', $sp->images[0]) : url('images/default-product.jpg') }}"
+                                 alt="{{ $sp->name }}"
+                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="text-center uppercase text-sm font-bold tracking-wider">{{ $sp->name }}</h3>
+                    </a>
                 </div>
-                <h3 class="text-center uppercase text-sm font-bold tracking-wider">Superstar</h3>
-            </div>
-
-            <!-- Ultraboost -->
-            <div class="group">
-                <div class="mb-2">
-                    <img src="https://www.adidas.co.id/media/scandiweb/slider/u/b/ub-hp-desktop.jpg" 
-                        alt="Ultraboost" 
-                        class="w-full hover:scale-105 transition-transform duration-300">
+            @empty
+                <div class="col-span-4 text-center py-8 text-gray-500 dark:text-gray-400">
+                    No showcase products available
                 </div>
-                <h3 class="text-center uppercase text-sm font-bold tracking-wider">Ultraboost</h3>
-            </div>
-
-            <!-- Stan Smith -->
-            <div class="group">
-                <div class="mb-2">
-                    <img src="https://www.adidas.co.id/media/scandiweb/slider/s/u/superstar_1.jpg" 
-                        alt="Stan Smith" 
-                        class="w-full hover:scale-105 transition-transform duration-300">
-                </div>
-                <h3 class="text-center uppercase text-sm font-bold tracking-wider">Stan Smith</h3>
-            </div>
-
-            <!-- NMD -->
-            <div class="group">
-                <div class="mb-2">
-                    <img src="https://www.adidas.co.id/media/scandiweb/slider/d/e/desktop_fourcolumn_nmd.jpg" 
-                        alt="NMD" 
-                        class="w-full hover:scale-105 transition-transform duration-300">
-                </div>
-                <h3 class="text-center uppercase text-sm font-bold tracking-wider">NMD</h3>
-            </div>
+            @endforelse
         </div>
     </div>
 
@@ -258,14 +250,18 @@
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold">On Sale</h2>
             <div class="flex items-center gap-2">
-                <button @click="$refs.productCarousel.scrollLeft -= $refs.productCarousel.clientWidth" class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                <button @click="$refs.productCarousel.scrollLeft -= $refs.productCarousel.clientWidth"
+                        class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                 </button>
-                <button @click="$refs.productCarousel.scrollLeft += $refs.productCarousel.clientWidth" class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                <button @click="$refs.productCarousel.scrollLeft += $refs.productCarousel.clientWidth"
+                        class="bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
                 </button>
             </div>
@@ -273,73 +269,45 @@
 
         <!-- Product Carousel -->
         <div class="relative overflow-hidden">
-            <div x-ref="productCarousel" 
-                class="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth">
-                <!-- Product Card 1 -->
-                <div class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
-                    <div class="aspect-w-4 aspect-h-4 mb-4">
-                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/a504e2c6-dcc0-41b9-bb00-3648c3906ae2/WMNS+AIR+FORCE+1+%2707+LX.png" 
-                            alt="Nike Air Force 1 '07 LX"
-                            class="w-full h-full object-cover">
+            <div x-ref="productCarousel"
+                 class="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth">
+                @forelse($onSaleProducts as $product)
+                    <div wire:key="{{ $product->id }}"
+                         class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
+                        <a href="/products/{{ $product->slug }}">
+                            <div class="relative mb-4 pb-[100%]"> <!-- This creates the square aspect ratio -->
+                                <img src="{{ isset($product->images[0]) ? url('storage', $product->images[0]) : url('images/default-product.jpg') }}"
+                                     alt="{{ $product->name }}"
+                                     class="absolute inset-0 w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-medium line-clamp-2 text-[length:var(--dynamic-font-size,1.125rem)]"
+                                x-data
+                                x-init="
+                                    const text = $el.textContent;
+                                    const length = text.length;
+                                    if (length > 50) {
+                                        $el.style.setProperty('--dynamic-font-size', '0.875rem');
+                                    } else if (length > 30) {
+                                        $el.style.setProperty('--dynamic-font-size', '1rem');
+                                    }
+                                ">
+                                {{ $na->name }}
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-2">{{ $product->category?->name }}</p>
+                            <p class="font-medium">{{ Number::currency($product->price, 'IDR') }}</p>
+                        </a>
                     </div>
-                    <h3 class="font-medium">Nike Air Force 1 '07 LX</h3>
-                    <p class="text-gray-600 text-sm mb-2">Women's Shoes</p>
-                    <p class="font-medium">Rp 2,099,000</p>
-                </div>
-
-                <!-- Product Card 2 -->
-                <div class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
-                    <div class="aspect-w-4 aspect-h-4 mb-4">
-                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/1eade03b-844d-4184-b1d4-4d3c03fd5b8a/M+ZOOM+VAPOR+12+HC+PRM.png" 
-                            alt="Nike Dunk Low LX"
-                            class="w-full h-full object-cover">
+                @empty
+                    <div class="col-span-4 text-center py-8 text-gray-500 dark:text-gray-400">
+                        No on sale products available
                     </div>
-                    <h3 class="font-medium">Nike Dunk Low LX</h3>
-                    <p class="text-gray-600 text-sm mb-2">Women's Shoes</p>
-                    <p class="font-medium">Rp 1,909,000</p>
-                </div>
-
-                <!-- Product Card 3 -->
-                <div class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
-                    <div class="aspect-w-4 aspect-h-4 mb-4">
-                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/c5ef2329-cf50-4140-826f-0032f5f77ba6/nikecourt-slam-tennis-skirt-nFbhc3.png" 
-                            alt="NikeCourt Slam"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="font-medium">NikeCourt Slam</h3>
-                    <p class="text-gray-600 text-sm mb-2">Women's Tennis Skirt</p>
-                    <p class="font-medium">Rp 899,000</p>
-                </div>
-
-                <!-- Product Card 4 -->
-                <div class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
-                    <div class="aspect-w-4 aspect-h-4 mb-4">
-                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/c5ef2329-cf50-4140-826f-0032f5f77ba6/nikecourt-slam-tennis-skirt-nFbhc3.png" 
-                            alt="NikeCourt Slam"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="font-medium">NikeCourt Slam</h3>
-                    <p class="text-gray-600 text-sm mb-2">Women's Tennis Skirt</p>
-                    <p class="font-medium">Rp 899,000</p>
-                </div>
-
-                <!-- Product Card 5 -->
-                <div class="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-start">
-                    <div class="aspect-w-4 aspect-h-4 mb-4">
-                        <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/c5ef2329-cf50-4140-826f-0032f5f77ba6/nikecourt-slam-tennis-skirt-nFbhc3.png" 
-                            alt="NikeCourt Slam"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="font-medium">NikeCourt Slam</h3>
-                    <p class="text-gray-600 text-sm mb-2">Women's Tennis Skirt</p>
-                    <p class="font-medium">Rp 899,000</p>
-                </div>
+                @endforelse
             </div>
         </div>
     </div>
     {{-- End On Sale --}}
 
-    
+
 
     <!-- Member Benefits Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white">
@@ -347,11 +315,11 @@
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-bold">Member Benefits</h2>
             </div>
-    
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
                 <!-- Member Product Card -->
                 <div class="relative aspect-[5/7] group overflow-hidden">
-                    <img src="https://static.nike.com/a/images/f_auto/dpr_0.9,cs_srgb/h_710,c_limit/cb28c551-b85b-479f-8fc3-40ad4e7c9ca4/nike-just-do-it.jpg" 
+                    <img src="https://static.nike.com/a/images/f_auto/dpr_0.9,cs_srgb/h_710,c_limit/cb28c551-b85b-479f-8fc3-40ad4e7c9ca4/nike-just-do-it.jpg"
                          alt="Member Product"
                          class="w-full h-full object-cover">
                     <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/60">
@@ -359,10 +327,10 @@
                         <h3 class="text-white text-2xl font-medium mb-4">Your Exclusive Access</h3>
                     </div>
                 </div>
-    
+
                 <!-- Fitzone by You Card -->
                 <div class="relative aspect-[5/7] group overflow-hidden">
-                    <img src="https://static.nike.com/a/images/f_auto/dpr_0.9,cs_srgb/h_710,c_limit/100ca749-1a94-4f98-bc43-a58e7e9cdbcf/nike-just-do-it.png" 
+                    <img src="https://static.nike.com/a/images/f_auto/dpr_0.9,cs_srgb/h_710,c_limit/100ca749-1a94-4f98-bc43-a58e7e9cdbcf/nike-just-do-it.png"
                          alt="Fitzone by You"
                          class="w-full h-full object-cover">
                     <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/60">
@@ -370,10 +338,10 @@
                         <h3 class="text-white text-2xl font-medium mb-4">Your Customisation Service</h3>
                     </div>
                 </div>
-    
+
                 <!-- Member Rewards Card -->
                 <div class="relative aspect-[5/7] group overflow-hidden">
-                    <img src="https://static.nike.com/a/images/f_auto/dpr_0.9,cs_srgb/h_710,c_limit/39412611-0af5-4770-8c2e-ef5c23bc6a3d/nike-just-do-it.jpg" 
+                    <img src="https://static.nike.com/a/images/f_auto/dpr_0.9,cs_srgb/h_710,c_limit/39412611-0af5-4770-8c2e-ef5c23bc6a3d/nike-just-do-it.jpg"
                          alt="Member Rewards"
                          class="w-full h-full object-cover">
                     <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/60">
@@ -385,10 +353,6 @@
         </div>
     </div>
     <!-- End Member Benefits Section -->
-
-
-
-    
 
     <style>
         /* Hide scrollbar but keep functionality */
@@ -402,5 +366,3 @@
     </style>
 
 </div>
-
-
