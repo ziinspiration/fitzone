@@ -46,26 +46,22 @@ class MyAccountPage extends Component
             $user->first_name = $this->first_name;
             $user->last_name = $this->last_name;
 
-            Log::info('Avatar Object:', [$this->avatar]);
-
             if ($this->avatar) {
-                Log::info('Disk Used:', [config('filesystems.default')]);
-                Log::info('Before store:', [$this->avatar]);
                 $user->avatar = $this->avatar->store('avatars', 'public');
-                Log::info('After store:', [$user->avatar]);
             }
 
-
             $user->save();
-            Log::info('Data User After Save:', [$user]);
+
+            session()->flash('success', 'Profile has been successfully updated!');
+
+            sleep(1);
+            $this->redirect(request()->header('Referer'));
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to update profile. Please try again.');
             Log::error('Failed to update profile:', ['error' => $e->getMessage()]);
-            $this->resetErrorBag();
             throw $e;
         }
     }
-
 
     public function updatePassword()
     {

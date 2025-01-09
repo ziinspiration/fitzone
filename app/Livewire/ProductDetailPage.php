@@ -19,16 +19,25 @@ class ProductDetailPage extends Component
     public $slug;
     public $quantity = 1;
     public $selectedSize;
+    public $product;
+    public $newArrivals;
 
     public function mount($slug)
     {
         $this->slug = $slug;
+        $this->product = Product::where('slug', $slug)->firstOrFail();
+        $this->newArrivals = Product::with('category')
+            ->where('id', '!=', $this->product->id)
+            ->latest()
+            ->take(6)
+            ->get();
     }
 
     public function render()
     {
         return view('livewire.product-detail-page', [
             'product' => Product::where('slug', $this->slug)->firstOrFail(),
+            'newArrivals' => $this->newArrivals,
             'sizes' => Size::all(),
         ]);
     }
