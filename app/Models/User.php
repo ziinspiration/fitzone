@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Notifications\Notifiable;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+
+    protected $appends = ['full_name'];
+
     use HasFactory, Notifiable;
 
     /**
@@ -18,9 +21,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
+        'verification_code',
+        'is_verified',
+        'avatar',
+        'role_id',
     ];
 
     /**
@@ -44,5 +52,47 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function cartItemCount()
+    {
+        return $this->cart ? $this->cart->items()->count() : 0;
+    }
+
+    public function cartGrandTotal()
+    {
+        return $this->cart ? $this->cart->items->sum('total_amount') : 0;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->role_id === 1;
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function setFullNameAttribute($value)
+    {
+        $names = explode(' ', $value, 2);
+        $this->attributes['first_name'] = $names[0] ?? '';
+        $this->attributes['last_name'] = $names[1] ?? '';
     }
 }
